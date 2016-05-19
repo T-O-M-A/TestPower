@@ -18,7 +18,6 @@ PuissanceAnalytique <- function(mean1, mean2, var, alpha)
   return(pnorm(mean2 - u))
 }
 
-
 # Estimation de la puissance
 # à partir d'un échantillon de taille n 
 # de taille d'effet fixée 
