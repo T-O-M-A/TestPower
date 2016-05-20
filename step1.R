@@ -10,27 +10,44 @@
 # Une fois le calcul effectué pour chaque itération du Bootstrap, on estime la taille d'effet désirée par 
 # la moyenne des tailles d'effets obtenues précédemments.
 
-
-tailledeffet<-function(mean, var, alpha, puissance)
+tailledeffet<-function(mean, var, alpha, puissance, n_observation, n_iteration, percent_bootstrap)
 {
-  norm <- rnorm(1000, mean, var)
+  norm <- rnorm(n_observation, mean, sqrt(var))
   
-  meanu <- 1:3000
-  for (i in 1:3000) {
-    rand <- sample(1:1000, 800)
-    rnormboot <- norm[rand]
-    tri <- sort(rnormboot)
-    max <- round((1-alpha)*length(rnormboot))
-    min <- round((1-puissance)*length(rnormboot))
+  meanu <- 1:n_iteration
+  for (i in 1:n_iteration) {
+    rand <- sample(1:n_observation, percent_bootstrap*n_observation)
+    bootstrap <- norm[rand]
+    tri <- sort(bootstrap)
+    max <- round((1-alpha)*length(bootstrap))
+    min <- round((1-puissance)*length(bootstrap))
     umax <- tri[max]
-    umin <- tri[min+1]
-    meanu[i] <- umax - umin
+    umin <- tri[min]
+    meanu[i] <- (umax - umin)/sqrt((percent_bootstrap*n_observation)*var(norm))
   }
 
-  hist(meanu,main="Histogramme de Taille d'Effet",xlab="Taille d'effet",ylab="Densité",ylim=c(0,20/sqrt(var)),proba=T)
+  #hist(meanu,main="Histogramme de Taille d'Effet",xlab="Taille d'effet",ylab="Densité",ylim=c(0,20*sqrt(percent_bootstrap*n_observation/var(norm))),proba=T)
   
   return(mean(meanu))
 }
 
-te<-tailledeffet(10,1, 0.05, 0.9)
-te
+# On répète le processus P précédent un bon nombre de fois pour estimer E[P], qui devrait être très proche
+# de la taille d'effet réelle.
+mean <- 0
+var <- 1
+alpha <- 0.05
+puissance <- 0.99
+n_observations <- 100
+n_iteration <- 500
+percent_bootstrap <- 0.8
+
+tab <- 1:100
+for (i in 1:100) {
+te<-tailledeffet(mean,var, alpha, puissance, n_observation, n_iteration, percent_bootstrap)
+tab[i] <- te
+}
+
+hist(tab,main="Histogramme des Moyennes de Taille d'Effet",xlab="Taille d'effet",ylab="Densité",ylim=c(0,length(tab)),proba=T)
+
+mean(tab)
+power.t.test(power=puissance,sig.level=alpha,n=n_observation*percent_bootstrap,type="one.sample",alternative="one.sided")[2]
