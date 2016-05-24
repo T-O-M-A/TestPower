@@ -23,7 +23,7 @@ runs = 1000
 # no difference to test the alpha level (type I errors)
 meand = 0 
 # non null to test how often the existing effect is found (power)
-#meand = 0.04
+meand = 0.04
 
 # Standard deviation of samples
 s1 = 0.1
@@ -83,7 +83,7 @@ ttest_normal<-function(runs, n, pilote, alpha){
   mean2 = pilote[2]
   s1 = pilote[3]
   s2 = pilote[4]
-  cf = pilote[4]
+  cf = pilote[5]
   
   # Independent variable (predictor)
   x = c(
