@@ -1,41 +1,76 @@
-alpha <- 10 - sample(0:2000, 1)/100
-beta_x <- 10 - sample(0:2000, 1)/100
-beta_y <- 10 - sample(0:2000, 1)/100
-beta_z <- 10 - sample(0:2000, 1)/100
-
-n = 3
-
-mu_x <- 5 - sample(0:1000, 1)/100
-s_x <- sample(0:300, 1)/100
-mu_y <- 5 - sample(0:1000, 1)/100
-s_y <- sample(0:300, 1)/100
-mu_z <- 5 - sample(0:1000, 1)/100
-s_z <- sample(0:300, 1)/100
-
-observations<-function(n, mu_x, s_x, mu_y, s_y, mu_z, s_z){
-  x <- rnorm(n, mean = mu_x, sd = s_x)
-  y <- rnorm(n, mean = mu_y, sd = s_y)
-  z <- rnorm(n, mean = mu_z, sd = s_z)
-  e <- rnorm(n, mean = 0, sd = 1)
-  return (c(x,y,z,e))
+#A utiliser en deux temps avec modèle
+#Observations génère les observations x de la régression multilinéaire
+observations<-function(n_obs, mu, s){
+  n_param <- length(mu)
+  x <- 1:(n_param*n_obs)
+  for (i in 1:n_param) {
+    x[((i-1)*n_obs+1):(i*n_obs)] <- rnorm(n_obs, mean = mu[i], sd = s[i])
+  }
+  return (list(x=x))
 }
 
-regression<-function(alpha, beta_x, x, beta_y, y, beta_z, z, e){
-  Y <- alpha + beta_x*x + beta_y*y + beta_z*z + e
-  return(Y)
+#A utiliser avec observations
+#Modèle génère les Y en partant des observations x
+modele<-function(alpha, beta, obs){
+  n_param <- length(beta)
+  n_obs <- length(obs$x)/n_param
+  e <- rnorm(n_obs, mean = 0, sd = 1)
+  Y <- 1:n_obs
+  for (i in 1:n_obs) {
+    Y[i] <- alpha + e[i]
+    for (j in 1:n_param) {
+      Y[i] <- Y[i] + beta[j]*obs$x[((j-1)*n_obs)+i]
+    }
+  }
+  return(list(Y=Y,e=e))
 }
 
-observations <- observations(n, mu_x, s_x, mu_y, s_y, mu_z, s_z)
-observations
-x <- observations[1:n]
-y <- observations[n+1:2*n]
-z <- observations[2*n+1:3*n]
-e <- observations[3*n+1:4*n]
+#Combinaison de Observations et Modèle
+#Donne immédiatement les observations x et Y
+regression<-function(alpha, beta, n_obs, mu, s){
+  n_param <- length(beta)
+  x <- 1:(n_param*n_obs)
+  for (i in 1:n_param) {
+    x[((i-1)*n_obs+1):(i*n_obs)] <- rnorm(n_obs, mean = mu[i], sd = s[i])
+  }
+  e <- rnorm(n_obs, mean = 0, sd = 1)
+  Y <- 1:n_obs
+  for (i in 1:n_obs) {
+    Y[i] <- alpha + e[i]
+    for (j in 1:n_param) {
+      Y[i] <- Y[i] + beta[j]*x[((j-1)*n_obs)+i]
+    }
+  }
+  return(list(x=x,Y=Y,e=e))
+}
 
-Y <- regression(alpha, beta_x, x, beta_y, y, beta_z, z, e)
-
-observations
-x
-y
-z
-Y
+#Identique à Regression, sauf qu'ici les constantes de la régression et les propriétés
+#des normales sont déterminées aléatoirement plutôt que fournies.
+# alpha \in [-10;10]
+# beta \in [-5;5]
+# mean \in [-5;5]
+# sd \in [0;3]
+regression_blind<-function(n_param, n_obs){
+  alpha <- 10 - sample(1:2000, 1)/100
+  beta <- 1:n_param
+  mu <- 1:n_param
+  s <- 1:n_param
+  for (i in 1:n_param){
+    beta[i] = 5 - sample(1:1000, 1)/100
+    mu[i] = 5 - sample(1:1000, 1)/100
+    s[i] = 3 - sample(1:300, 1)/100
+  }
+  x <- 1:(n_param*n_obs)
+  for (i in 1:n_param) {
+    x[((i-1)*n_obs+1):(i*n_obs)] <- rnorm(n_obs, mean = mu[i], sd = s[i])
+  }
+  e <- rnorm(n_obs, mean = 0, sd = 1)
+  Y <- 1:n_obs
+  for (i in 1:n_obs) {
+    Y[i] <- alpha + e[i]
+    for (j in 1:n_param) {
+      Y[i] <- Y[i] + beta[j]*x[((j-1)*n_obs)+i]
+    }
+  }
+  return(list(Y=Y,x=x,alpha=alpha,beta=beta,mean=mu,sd=s,e=e))
+}
