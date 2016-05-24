@@ -10,9 +10,7 @@ rm(list=ls())
 #-----------------------------------------------------------------------
 
 # Taille des échantillons pilotes
-# Non nécessairement égaux (dépend des ressources disponibles)
-npilote_congruent = 40
-npilote_incongruent = 25
+npilote = 40
 
 
 # Taille des tirages pour Monte-Carlo.
@@ -44,13 +42,13 @@ alpha = 0.05
 
 
 
-pilote_ttest_paired<-function(npilote_congruent, npilote_incongruent, meand, s1, s2, cf)
+pilote_ttest_paired<-function(npilote, meand, s1, s2, cf)
 {
   # On simule 2 échantillons "réels"
   # tels que: leur différence de moyenne est meand,
   # les standard error des echantillons sont s1 et s2,
   # et le facteur de corrélation est cf.
-  congruent = rnorm(npilote_congruent,mean = 0,sd = s1)
+  congruent = rnorm(npilote,mean = 0,sd = s1)
   # Dans le cas apparié, on suppose que Y = a + bX + eps,
   # où eps est une normale centrée. On a donc:
   a = meand
@@ -58,7 +56,7 @@ pilote_ttest_paired<-function(npilote_congruent, npilote_incongruent, meand, s1,
   # cf = b/(s1s2)
   b = cf*(s1*s2)
   sd_eps = sqrt(s2^2-b^2*s1^2)  
-  eps = rnorm(npilote_congruent,mean = 0,sd = sd_eps)
+  eps = rnorm(npilote,mean = 0,sd = sd_eps)
   incongruent = a + b*congruent + eps
   # On estime les paramètres du pilote
   mean1 = mean(congruent)
@@ -78,7 +76,7 @@ pilote_ttest_paired<-function(npilote_congruent, npilote_incongruent, meand, s1,
 # t-test simulations (Monte-Carlo)
 #---------------------------------------------------
 
-ttest_normal<-function(runs, n, pilote, alpha, cf){
+ttest_normal<-function(runs, n, pilote, alpha){
   
   # On récupère les paramètres du pilote
   mean1 = pilote[1]
@@ -174,8 +172,8 @@ ttest_normal<-function(runs, n, pilote, alpha, cf){
   )
   results
 }
-pilote = pilote_ttest_paired(npilote_congruent, npilote_incongruent, meand, s1, s2, cf)
-ttest_normal(runs, n, pilote, alpha, cf)
+pilote = pilote_ttest_paired(npilote, meand, s1, s2, cf)
+ttest_normal(runs, n, pilote, alpha)
 # If meand=0, we expect the proportion of p-values<0.05 to be roughly at 0.05 (type I error rate)
 # If meand!=0, we expect the proportion of p-values<0.05 to be the highest possible (power)
 
