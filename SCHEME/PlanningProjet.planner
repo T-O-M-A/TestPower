@@ -23,53 +23,71 @@
   </calendars>
   <tasks>
     <task id="1" name="Prise en Main du Projet" note="" work="288000" start="20160516T000000Z" end="20160520T170000Z" work-start="20160516T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
-      <task id="2" name="1er Rendez-vous avec l'Encadrant" note="" work="28800" start="20160516T000000Z" end="20160516T170000Z" work-start="20160516T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-      <task id="3" name="Recherches sur le Projet / Documentation" note="" work="86400" start="20160517T000000Z" end="20160519T170000Z" work-start="20160517T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="2" name="1er Rendez-vous avec l'Encadrant" note="" work="28800" start="20160516T000000Z" end="20160516T170000Z" work-start="20160516T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="3" name="Recherches sur le Projet / Documentation" note="" work="86400" start="20160517T000000Z" end="20160519T170000Z" work-start="20160517T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160517T000000Z"/>
       </task>
-      <task id="4" name="Cas simple / Introduction au Probl&#xE8;me" note="" work="28800" start="20160520T000000Z" end="20160520T170000Z" work-start="20160520T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="4" name="Cas simple / Introduction au Probl&#xE8;me" note="" work="28800" start="20160520T000000Z" end="20160520T170000Z" work-start="20160520T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160520T000000Z"/>
       </task>
-      <task id="5" name="Prise en Main Approfondie de R" note="" work="144000" start="20160516T000000Z" end="20160520T170000Z" work-start="20160516T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="5" name="Prise en Main Approfondie de R" note="" work="144000" start="20160516T000000Z" end="20160520T170000Z" work-start="20160516T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160516T000000Z"/>
       </task>
     </task>
-    <task id="6" name="&#xC9;tude des Cas Usuels" note="" work="345600" start="20160523T000000Z" end="20160526T170000Z" work-start="20160523T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="6" name="&#xC9;tude des Cas Usuels" note="" work="518400" start="20160523T000000Z" end="20160526T170000Z" work-start="20160523T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <constraint type="must-start-on" time="20160523T000000Z"/>
-      <task id="7" name="Traitement et Ajout de l'&#xC9;tude Pilote" note="" work="259200" start="20160523T000000Z" end="20160525T170000Z" work-start="20160523T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="7" name="Traitement et Ajout de l'&#xC9;tude Pilote" note="" work="288000" start="20160523T000000Z" end="20160526T170000Z" work-start="20160523T080000Z" percent-complete="85" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160523T000000Z"/>
-        <task id="8" name="Test de Student - Un &#xC9;chantillon" note="" work="28800" start="20160523T000000Z" end="20160523T170000Z" work-start="20160523T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="8" name="Test de Student - Un &#xC9;chantillon" note="" work="28800" start="20160523T000000Z" end="20160523T170000Z" work-start="20160523T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160523T000000Z"/>
         </task>
-        <task id="9" name="Test de Student - Deux &#xC9;chantillons Appari&#xE9;s" note="" work="57600" start="20160523T000000Z" end="20160524T170000Z" work-start="20160523T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="9" name="Test de Student - Deux &#xC9;chantillons Appari&#xE9;s" note="" work="57600" start="20160523T000000Z" end="20160524T170000Z" work-start="20160523T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160523T000000Z"/>
         </task>
-        <task id="10" name="Test de Student - Deux &#xC9;chantillons Ind&#xE9;pendants" note="" work="57600" start="20160523T000000Z" end="20160524T170000Z" work-start="20160523T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="10" name="Test de Student - Deux &#xC9;chantillons Ind&#xE9;pendants" note="" work="57600" start="20160523T000000Z" end="20160524T170000Z" work-start="20160523T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160523T000000Z"/>
         </task>
-        <task id="11" name="Test de Corr&#xE9;lation de Pearson" note="" work="57600" start="20160524T000000Z" end="20160525T170000Z" work-start="20160524T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="11" name="Test de Corr&#xE9;lation de Pearson" note="" work="57600" start="20160524T000000Z" end="20160525T170000Z" work-start="20160524T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160524T000000Z"/>
         </task>
-        <task id="12" name="Test ANOVA" note="" work="57600" start="20160524T000000Z" end="20160525T170000Z" work-start="20160524T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="12" name="Test ANOVA" note="" work="86400" start="20160524T000000Z" end="20160526T170000Z" work-start="20160524T080000Z" percent-complete="50" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160524T000000Z"/>
         </task>
       </task>
-      <task id="13" name="Intervalles de Confiance" note="" work="86400" start="20160524T000000Z" end="20160526T170000Z" work-start="20160524T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="13" name="Intervalles de Confiance" note="" work="230400" start="20160525T000000Z" end="20160526T170000Z" work-start="20160525T080000Z" percent-complete="40" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160524T000000Z"/>
+        <task id="14" name="Test de Student - Un &#xC9;chantillon" note="" work="28800" start="20160525T000000Z" end="20160525T170000Z" work-start="20160525T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
+          <constraint type="must-start-on" time="20160525T000000Z"/>
+        </task>
+        <task id="15" name="Test de Student - Deux &#xC9;chantillons Appari&#xE9;s" note="" work="57600" start="20160525T000000Z" end="20160526T170000Z" work-start="20160525T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <constraint type="must-start-on" time="20160525T000000Z"/>
+        </task>
+        <task id="16" name="Test de Student - Deux &#xC9;chantillons Ind&#xE9;pendants" note="" work="28800" start="20160525T000000Z" end="20160525T170000Z" work-start="20160525T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
+          <constraint type="must-start-on" time="20160525T000000Z"/>
+        </task>
+        <task id="17" name="Test de Corr&#xE9;lation de Pearson" note="" work="57600" start="20160525T000000Z" end="20160526T170000Z" work-start="20160525T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <constraint type="must-start-on" time="20160525T000000Z"/>
+        </task>
+        <task id="18" name="Test ANOVA" note="" work="57600" start="20160525T000000Z" end="20160526T170000Z" work-start="20160525T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+          <constraint type="must-start-on" time="20160525T000000Z"/>
+        </task>
       </task>
     </task>
-    <task id="14" name="Rendez-vous avec Jean-Charles Quinton" note="" work="57600" start="20160516T000000Z" end="20160520T170000Z" work-start="20160516T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
-      <task id="15" name="1er Rendez-vous - Pose du Probl&#xE8;me" note="" work="28800" start="20160516T000000Z" end="20160516T170000Z" work-start="20160516T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
-      <task id="16" name="2&#xE8;me Rendez-vous - Retour sur la Premi&#xE8;re Semaine" note="" work="28800" start="20160520T000000Z" end="20160520T170000Z" work-start="20160520T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="19" name="Rendez-vous avec Jean-Charles Quinton" note="" work="57600" start="20160516T000000Z" end="20160520T170000Z" work-start="20160516T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
+      <task id="20" name="1er Rendez-vous - Pose du Probl&#xE8;me" note="" work="28800" start="20160516T000000Z" end="20160516T170000Z" work-start="20160516T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="21" name="2&#xE8;me Rendez-vous - Retour sur la Premi&#xE8;re Semaine" note="" work="28800" start="20160520T000000Z" end="20160520T170000Z" work-start="20160520T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160520T000000Z"/>
       </task>
     </task>
-    <task id="17" name="TD SCHEME" note="" work="57600" start="20160523T000000Z" end="20160527T170000Z" work-start="20160523T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
-      <task id="18" name="1er TD SCHEME - Cadrage" note="" work="28800" start="20160523T000000Z" end="20160523T170000Z" work-start="20160523T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="22" name="TD SCHEME" note="" work="115200" start="20160523T000000Z" end="20160603T170000Z" work-start="20160523T080000Z" percent-complete="33" priority="0" type="normal" scheduling="fixed-work">
+      <task id="23" name="1er TD SCHEME - Cadrage" note="" work="28800" start="20160523T000000Z" end="20160523T170000Z" work-start="20160523T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160523T000000Z"/>
       </task>
-      <task id="19" name="2&#xE8;me TD SCHEME - Entra&#xEE;nement &#xE0; la Revue de Projet" note="" work="28800" start="20160527T000000Z" end="20160527T170000Z" work-start="20160527T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="24" name="2&#xE8;me TD SCHEME - Entra&#xEE;nement &#xE0; la Revue de Projet" note="" work="28800" start="20160527T000000Z" end="20160527T170000Z" work-start="20160527T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160527T000000Z"/>
+      </task>
+      <task id="25" name="3&#xE8;me TD SCHEME - Revue de Projet" note="" work="57600" start="20160602T000000Z" end="20160603T170000Z" work-start="20160602T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <constraint type="must-start-on" time="20160602T000000Z"/>
       </task>
     </task>
   </tasks>

@@ -74,3 +74,85 @@ regression_blind<-function(n_param, n_obs){
   }
   return(list(Y=Y,x=x,alpha=alpha,beta=beta,mean=mu,sd=s,e=e))
 }
+
+#Code fourni par Jean-Charles Quinton
+univariate_regression<-function(n, b_0, b_1, noise_s){
+  # IVs data generation
+  x = runif(n)
+  # Model parameters
+  b0 = b_0
+  b1 = b_1
+  noise_sd = noise_s
+  # DV generation
+  y = b0 + b1*x + rnorm(n,0,noise_sd)
+  
+  # Test if parameters are correctly estimated
+  mod = lm(y~x)
+  return(list(Y=y, x=x, sum=summary(mod)))
+}
+
+multiple_regression<-function(n, b_0, b_1, b_2, noise_s){
+  # IVs data generation
+  x = cbind(rep(1,n),runif(n),runif(n))
+  # Model parameters
+  b = c(b_0, b_1, b_2)
+  noise_sd = noise_s
+  # DV generation (matrix based)
+  y = x%*%b + rnorm(n,0,noise_sd)
+  
+  # Test if parameters are correctly estimated
+  # (remove first column in x, which corresponds to the constant)
+  mod = lm(y~x[,-1])
+  return(list(Y=y, x=x, sum=summary(mod)))
+}
+
+interaction_regression<-function(n, b_0, b_1, b_2, b_3, noise_s){
+  # IVs data generation
+  x = cbind(rep(1,n),runif(n),runif(n))
+  # Add interaction term
+  x = cbind(x,x[,3]*x[,2])
+  # Model parameters
+  b = c(b_0, b_1, b_2, b_3)
+  noise_sd = noise_s
+  # DV generation (matrix based)
+  y = x%*%b + rnorm(n,0,noise_sd)
+  
+  # Test if parameters are correctly estimated
+  # (retrieve first column in x, which corresponds to the constant)
+  mod = lm(y~x[,-1])
+  return(list(Y=y, x=x, sum=summary(mod)))
+}
+
+mixed_effect_regression<-function(n, b_0, b_1_f, b_2, noise_s){
+  # Grouping factor
+  npart = 10
+  part = sort(rep(c(1:npart),length.out=n))
+  # Other IV generation
+  x = runif(n)
+  # Model parameters
+  b0 = b_0
+  b1_f = b_1_f
+  b1 = b1_f + b_2*rnorm(npart)
+  noise_sd = noise_s
+  # DV generation (matrix based)
+  y = b0 + b1[part]*x + rnorm(n,0,noise_sd)
+  
+  # Test if parameters are correctly estimated
+  # (retrieve first column in x, which corresponds to the constant)
+  library(lme4)
+  mod = lmer(y~x+(0+x|part))
+  
+  # Comparison of the fixed effects with the parameters
+  df1 = data.frame(
+    Estimate = fixef(mod),
+    Parameter = rbind(b0,b1_f)
+  )
+  
+  # Comparison of the estimation and parameter values (random component)
+  # fixed effect for x + random effects for each participant for x
+  df2 = data.frame(
+    Estimate = fixef(mod)["x"] + ranef(mod)$part$x,
+    Parameter = b1
+  )
+  return(list(Y=y, x=x, sum=summary(mod), df1 = df1, df2 = df2))
+}
