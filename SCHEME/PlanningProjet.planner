@@ -50,26 +50,26 @@
         <task id="11" name="Test de Corr&#xE9;lation de Pearson" note="" work="57600" start="20160524T000000Z" end="20160525T170000Z" work-start="20160524T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160524T000000Z"/>
         </task>
-        <task id="12" name="Test ANOVA" note="" work="86400" start="20160524T000000Z" end="20160526T170000Z" work-start="20160524T080000Z" percent-complete="50" priority="0" type="normal" scheduling="fixed-work">
+        <task id="12" name="Test ANOVA" note="" work="86400" start="20160524T000000Z" end="20160526T170000Z" work-start="20160524T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160524T000000Z"/>
         </task>
       </task>
-      <task id="13" name="Intervalles de Confiance" note="" work="230400" start="20160525T000000Z" end="20160526T170000Z" work-start="20160525T080000Z" percent-complete="40" priority="0" type="normal" scheduling="fixed-work">
+      <task id="13" name="Intervalles de Confiance" note="" work="230400" start="20160525T000000Z" end="20160527T170000Z" work-start="20160525T080000Z" percent-complete="40" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160524T000000Z"/>
         <task id="14" name="Test de Student - Un &#xC9;chantillon" note="" work="28800" start="20160525T000000Z" end="20160525T170000Z" work-start="20160525T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160525T000000Z"/>
         </task>
-        <task id="15" name="Test de Student - Deux &#xC9;chantillons Appari&#xE9;s" note="" work="57600" start="20160525T000000Z" end="20160526T170000Z" work-start="20160525T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="15" name="Test de Student - Deux &#xC9;chantillons Appari&#xE9;s" note="" work="57600" start="20160525T000000Z" end="20160526T170000Z" work-start="20160525T080000Z" percent-complete="90" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160525T000000Z"/>
         </task>
         <task id="16" name="Test de Student - Deux &#xC9;chantillons Ind&#xE9;pendants" note="" work="28800" start="20160525T000000Z" end="20160525T170000Z" work-start="20160525T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160525T000000Z"/>
         </task>
-        <task id="17" name="Test de Corr&#xE9;lation de Pearson" note="" work="57600" start="20160525T000000Z" end="20160526T170000Z" work-start="20160525T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
-          <constraint type="must-start-on" time="20160525T000000Z"/>
+        <task id="17" name="Test de Corr&#xE9;lation de Pearson" note="" work="57600" start="20160526T000000Z" end="20160527T170000Z" work-start="20160526T080000Z" percent-complete="62" priority="0" type="normal" scheduling="fixed-work">
+          <constraint type="must-start-on" time="20160526T000000Z"/>
         </task>
-        <task id="18" name="Test ANOVA" note="" work="57600" start="20160525T000000Z" end="20160526T170000Z" work-start="20160525T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
-          <constraint type="must-start-on" time="20160525T000000Z"/>
+        <task id="18" name="Test ANOVA" note="" work="57600" start="20160526T000000Z" end="20160527T170000Z" work-start="20160526T080000Z" percent-complete="59" priority="0" type="normal" scheduling="fixed-work">
+          <constraint type="must-start-on" time="20160526T000000Z"/>
         </task>
       </task>
       <task id="19" name="Estimation du Nombre d'Observations" note="" work="288000" start="20160530T000000Z" end="20160601T170000Z" work-start="20160530T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
@@ -113,7 +113,7 @@
     </task>
     <task id="32" name="Interface Graphique" note="" work="144000" start="20160526T000000Z" end="20160601T170000Z" work-start="20160526T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <constraint type="must-start-on" time="20160526T000000Z"/>
-      <task id="33" name="Interface Graphique" note="" work="144000" start="20160526T000000Z" end="20160601T170000Z" work-start="20160526T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="33" name="Interface Graphique" note="" work="144000" start="20160526T000000Z" end="20160601T170000Z" work-start="20160526T080000Z" percent-complete="13" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160526T000000Z"/>
       </task>
     </task>
