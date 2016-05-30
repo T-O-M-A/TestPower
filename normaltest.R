@@ -10,20 +10,25 @@ rm(list=ls())
 #-----------------------------------------------------------------------
 
 
-# Number of runs
+# Taille de l'échantillon pilote
+npilote = 20
+
+# Taille des tirages pour Monte-Carlo.
+n = 50
+# Number of runs for MC
 runs = 1000
 
-# Sample size
-n = 20
 
 
-# Difference between the means
-# reference mean
+# Reference mean
 meanref = 0
+# Difference between the means:
 # no difference to test the alpha level (type I errors)
-meand0 = meanref
+meand = 0
 # non null to test how often the existing effect is found (power)
-meand = 0.1 + meanref
+meand = 0.04
+
+mean = meand + meanref
 
 # Standard deviation of sample
 s = 0.1
@@ -32,10 +37,34 @@ s = 0.1
 alpha = 0.05
 
 #---------------------------------------------------
+#                     pilote 
+#---------------------------------------------------
+
+
+pilote_ttest_normal<-function(npilote, mean, meanref, s)
+{
+  # On simule un échantillon "réel" de loi N(meand,s)
+  echantillon = rnorm(npilote,mean = mean,sd = s)
+  # On estime la différence de moyenne et l'écart-type
+  mean2 = mean(echantillon)
+  ecart_type = sd(echantillon)
+  # On retourne l'approximation de l'étude pilote
+  return (c(mean2, meanref, ecart_type))
+}
+
+
+#---------------------------------------------------
 # t-test simulations (Monte-Carlo)
 #---------------------------------------------------
 
-ttest_normal<-function(runs, meanref, meand, n, s, alpha){
+
+ttest_normal_MC<-function(n, runs, pilote, alpha){
+  
+  # On récupère les paramètres de l'étude pilote pour le MC.
+  mean = pilote[1]
+  meanref = pilote[2]
+  s = pilote[3]
+  meand = mean-meanref
   
   # Independent variable (predictor)
   x = c(
@@ -51,7 +80,7 @@ ttest_normal<-function(runs, meanref, meand, n, s, alpha){
     # Generate random independent samples with normal distributions
     # for the dependent variable (predicted)
     y = c(
-      rnorm(n,mean=meand,sd=s)
+      rnorm(n,mean=mean,sd=s)
     )
     
     # Run model : on stocke les t-statistics et p-values
@@ -111,6 +140,8 @@ ttest_normal<-function(runs, meanref, meand, n, s, alpha){
   # Add these results to the global table
   results = data.frame(
     n=n,
+    mean=mean,
+    meanref=meanref,
     mean_diff=meand,
     sd=s,
     runs=runs,
@@ -120,6 +151,7 @@ ttest_normal<-function(runs, meanref, meand, n, s, alpha){
   )
   results
 }
-ttest_normal(runs, meanref, meand, n, s, alpha)
+pilote = pilote_ttest_normal(npilote, mean, meanref, s)
+ttest_normal_MC(n, runs, pilote, alpha)
 # If meand=0, we expect the proportion of p-values<0.05 to be roughly at 0.05 (type I error rate)
 # If meand!=0, we expect the proportion of p-values<0.05 to be the highest possible (power)

@@ -9,7 +9,6 @@
 #   la différence entre la (1-alpha)ième valeurs et la (1-beta)ième.
 # Une fois le calcul effectué pour chaque itération du Bootstrap, on estime la taille d'effet désirée par 
 # la moyenne des tailles d'effets obtenues précédemments.
-
 tailledeffet<-function(mean, var, alpha, puissance, n_observation, n_iteration, percent_bootstrap)
 {
   norm <- rnorm(n_observation, mean, sqrt(var))
@@ -21,9 +20,9 @@ tailledeffet<-function(mean, var, alpha, puissance, n_observation, n_iteration, 
     tri <- sort(bootstrap)
     max <- round((1-alpha)*length(bootstrap))
     min <- round((1-puissance)*length(bootstrap))
-    umax <- tri[max]
-    umin <- tri[min]
-    meanu[i] <- (umax - umin)/sqrt((percent_bootstrap*n_observation)*var(norm))
+    umax <- tri[max+1]
+    umin <- tri[min+1]
+    meanu[i] <- (umax - umin)/(sd(norm)*(sqrt(percent_bootstrap*n_observation)))
   }
 
   #hist(meanu,main="Histogramme de Taille d'Effet",xlab="Taille d'effet",ylab="Densité",ylim=c(0,20*sqrt(percent_bootstrap*n_observation/var(norm))),proba=T)
@@ -34,11 +33,11 @@ tailledeffet<-function(mean, var, alpha, puissance, n_observation, n_iteration, 
 # On répète le processus P précédent un bon nombre de fois pour estimer E[P], qui devrait être très proche
 # de la taille d'effet réelle.
 mean <- 0
-var <- 1
+var <- 0.1
 alpha <- 0.05
-puissance <- 0.99
-n_observations <- 100
-n_iteration <- 500
+puissance <- 0.9
+n_observation <- 50
+n_iteration <- 300
 percent_bootstrap <- 0.8
 
 tab <- 1:100

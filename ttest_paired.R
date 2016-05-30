@@ -9,21 +9,21 @@ rm(list=ls())
 # Paramètres de la simulation
 #-----------------------------------------------------------------------
 
+# Taille des échantillons pilotes
+npilote = 40
 
-# Number of runs
+
+# Taille des tirages pour Monte-Carlo.
+n = 50
+# Number of runs for MC
 runs = 1000
-
-# Sample size
-n = 20
 
 
 # Difference between the means
-
-mean1 = 0
 # no difference to test the alpha level (type I errors)
-mean2_0 = mean1 
+meand = 0 
 # non null to test how often the existing effect is found (power)
-mean2 = 0.1 + mean1
+meand = 0.04
 
 # Standard deviation of samples
 s1 = 0.1
@@ -35,11 +35,55 @@ cf = 0.8
 # Erreur de 1ère espèce
 alpha = 0.05
 
+
+#---------------------------------------------------
+#                     pilote 
+#---------------------------------------------------
+
+
+
+pilote_ttest_paired<-function(npilote, meand, s1, s2, cf)
+{
+  # On simule 2 échantillons "réels"
+  # tels que: leur différence de moyenne est meand,
+  # les standard error des echantillons sont s1 et s2,
+  # et le facteur de corrélation est cf.
+  congruent = rnorm(npilote,mean = 0,sd = s1)
+  # Dans le cas apparié, on suppose que Y = a + bX + eps,
+  # où eps est une normale centrée. On a donc:
+  a = meand
+  # puis var(Y) = b²var(X) + var(eps), et
+  # cf = b/(s1s2)
+  b = cf*(s1*s2)
+  sd_eps = sqrt(s2^2-b^2*s1^2)  
+  eps = rnorm(npilote,mean = 0,sd = sd_eps)
+  incongruent = a + b*congruent + eps
+  # On estime les paramètres du pilote
+  mean1 = mean(congruent)
+  mean2 = mean(incongruent)
+  ecart_type_congruent = sd(congruent)
+  ecart_type_incongruent = sd(incongruent)
+  cf_estime = cov(congruent,incongruent)/(sd(congruent)*sd(incongruent))
+  # On retourne l'approximation de l'étude pilote
+  return (c(mean1, mean2, ecart_type_congruent, ecart_type_incongruent, cf_estime))
+}
+
+
+
+
+
 #---------------------------------------------------
 # t-test simulations (Monte-Carlo)
 #---------------------------------------------------
 
-ttest_normal<-function(runs, mean1, mean2, n, s1, s2, alpha, cf){
+ttest_normal<-function(runs, n, pilote, alpha){
+  
+  # On récupère les paramètres du pilote
+  mean1 = pilote[1]
+  mean2 = pilote[2]
+  s1 = pilote[3]
+  s2 = pilote[4]
+  cf = pilote[5]
   
   # Independent variable (predictor)
   x = c(
@@ -128,7 +172,8 @@ ttest_normal<-function(runs, mean1, mean2, n, s1, s2, alpha, cf){
   )
   results
 }
-ttest_normal(runs, mean1, mean2, n, s1, s2, alpha, cf)
+pilote = pilote_ttest_paired(npilote, meand, s1, s2, cf)
+ttest_normal(runs, n, pilote, alpha)
 # If meand=0, we expect the proportion of p-values<0.05 to be roughly at 0.05 (type I error rate)
 # If meand!=0, we expect the proportion of p-values<0.05 to be the highest possible (power)
 

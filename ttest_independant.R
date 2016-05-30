@@ -1,9 +1,6 @@
 # Test de moyenne bilatéral - T test simulation (Monte Carlo)
 # Objectif: Estimation de puissance 
-# dans le cas: 2 échantillons indépendants de même variance 
-# connue s, et de moyennes respectives 0 et meand.
-# NB: les tailles des échantillons ne sont pas nécessairement
-# égales: on les note n1 et n2
+# dans le cas: 2 échantillons indépendants de même variance.
 
 # Clear environment
 rm(list=ls())
@@ -13,17 +10,25 @@ rm(list=ls())
 #-----------------------------------------------------------------------
 
 
-# Number of runs
+
+# Taille des échantillons pilotes
+# Non nécessairement égaux (dépend des ressources disponibles)
+npilote_congruent = 40
+npilote_incongruent = 25
+
+# Taille des tirages pour Monte-Carlo.
+# On les prends égaux de préférence.
+n1 = 50
+n2 = 50
+# Number of runs for MC
 runs = 1000
 
-# Sample sizes
-n1 = 20
-n2 = 20
+
 # Difference between the means
 # no difference to test the alpha level (type I errors)
-meand0 = 0
+meand = 0
 # non null to test how often the existing effect is found (power)
-meand = 0.1
+meand = 0.04
 
 # Standard deviation of both samples
 s = 0.1
@@ -31,12 +36,42 @@ s = 0.1
 # Erreur de 1ère espèce
 alpha = 0.05
 
+
+#---------------------------------------------------
+#                     pilote 
+#---------------------------------------------------
+
+
+pilote_ttest_independants<-function(npilote_congruent, npilote_incongruent, meand, s)
+{
+  # On simule 2 échantillons "réels"
+  congruent = rnorm(npilote_congruent,mean = 0,sd = s)
+  incongruent = rnorm(npilote_incongruent,mean = meand,sd = s)
+  # On estime la différence de moyenne et l'écart-type
+  mean1 = mean(congruent)
+  mean2 = mean(incongruent)
+  # On suppose leur écart-type égal.
+  # On l'estime donc par une moyenne de leur écart-type empirique.
+  ecart_type = (sd(congruent)+sd(incongruent))/2
+  # On retourne l'approximation de l'étude pilote
+  return (c(mean1, mean2, ecart_type))
+}
+
+
+
 #---------------------------------------------------
 # t-test simulations (Monte-Carlo)
 #---------------------------------------------------
 
-ttest_MC_samevar<-function(runs, meand, n1, n2, s, alpha){
-    
+ttest_independants_MC<-function(runs, pilote, n1, n2, alpha){
+ 
+  
+   # On récupère les paramètres de l'étude pilote pour le MC.
+  mean1 = pilote[1]
+  mean2 = pilote[2]
+  s = pilote[3]
+  meand = mean2-mean1
+  
   # Independent variable (predictor)
   x = c(
     rep(1,n1),	# group 1
@@ -52,8 +87,8 @@ ttest_MC_samevar<-function(runs, meand, n1, n2, s, alpha){
     # Generate random independent samples with normal distributions
     # for the dependent variable (predicted)
     y = c(
-      rnorm(n1,mean=0,sd=s),
-      rnorm(n2,mean=meand,sd=s)
+      rnorm(n1,mean=mean1,sd=s),
+      rnorm(n2,mean=mean2,sd=s)
     )
     
     # Run model : on stocke les t-statistics et p-values
@@ -121,8 +156,6 @@ ttest_MC_samevar<-function(runs, meand, n1, n2, s, alpha){
     p5_hand=p5_hand,
     p5_package=p5_package 
   )
-  results
-}
-ttest_MC_samevar(runs, meand, n1, n2, s, alpha)
+results
 # If meand=0, we expect the proportion of p-values<0.05 to be roughly at 0.05 (type I error rate)
 # If meand!=0, we expect the proportion of p-values<0.05 to be the highest possible (power)
