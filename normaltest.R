@@ -1,72 +1,89 @@
-# Test de moyenne unilatéral - T test simulation (Monte Carlo)
+# Test de moyenne bilatéral - T test simulation (Monte Carlo)
 # Objectif: Estimation de puissance 
 # dans le cas: 1 échantillon (comparasion à une moyenne nulle)
 
 # Clear environment
 rm(list=ls())
+library(gplots)
+
 
 #-----------------------------------------------------------------------
 # Paramètres de la simulation
 #-----------------------------------------------------------------------
 
 
+## Pilote
+
 # Taille de l'échantillon pilote
-npilote = 20
+npilote = 15
 
-# Taille des tirages pour Monte-Carlo.
-n = 50
-# Number of runs for MC
-runs = 1000
-
-
-
-# Reference mean
-meanref = 0
+# Nombre de runs pour le Bootstrap du pilote,
+# servant à estimer un intervalle de confiance pour l'écart-type du pilote
+runs_bs_pilote = 1000
 # Difference between the means:
 # no difference to test the alpha level (type I errors)
 meand = 0
 # non null to test how often the existing effect is found (power)
-meand = 0.04
+meand = 0.1
+# NB : If meand=0, we expect the proportion of p-values<0.05 to be roughly at 0.05 (type I error rate)
+#      If meand!=0, we expect the proportion of p-values<0.05 to be the highest possible (power)
 
-mean = meand + meanref
 
 # Standard deviation of sample
-s = 0.1
+sd = 0.7
 
-# Erreur de 1ère espèce
+# Erreur de 1ère espèce : toujours égale à 0.05
 alpha = 0.05
+
+## Monte Carlo
+
+
+# Intervalle des tirages pour Monte-Carlo.
+tailles = 10*(2:10)
+# Number of runs for MC
+runs_MC = 1000
+
+
+
+
+
 
 #---------------------------------------------------
 #                     pilote 
 #---------------------------------------------------
 
 
-pilote_ttest_normal<-function(npilote, mean, meanref, s)
+pilote_ttest_normal<-function(npilote, meand, sd, runs_bs_pilote)
 {
   # On simule un échantillon "réel" de loi N(meand,s)
-  echantillon = rnorm(npilote,mean = mean,sd = s)
-  # On estime la différence de moyenne et l'écart-type
-  mean2 = mean(echantillon)
+  echantillon = rnorm(npilote,mean = meand,sd = sd)
+  # On détermine les paramètres empiriques du pilote
+  meand2 = mean(echantillon)
   ecart_type = sd(echantillon)
+  # On détermine l'intervalle de confiance de la moyenne avec la fonction confint de R
+  conf_mean = t.test(echantillon,conf.level = alpha)$conf.int
+  # On détermine l'intervalle de confiance de l'écart-type avec un Bootstrap
+  table_sd = numeric(runs_bs_pilote)
+  for(i in 1:runs_bs_pilote)
+  {
+    # On choisit pour le boostrap des sous-ensembles de taille 80% de la taille de l'échantillon 
+    n_bs = ceiling(0.8*npilote)
+    table_sd[i] = sd((sample(echantillon,n_bs,replace=T)))
+  }
+  table_sd_sorted = sort(table_sd)
+  conf_sd = c(table_sd_sorted[floor(runs_bs_pilote*alpha)],table_sd_sorted[floor(runs_bs_pilote*(1-alpha))])
   # On retourne l'approximation de l'étude pilote
-  return (c(mean2, meanref, ecart_type))
+  return (list(ecart_type=ecart_type, mean = meand2, conf_mean=conf_mean, conf_sd=conf_sd))
 }
 
 
 #---------------------------------------------------
-# t-test simulations (Monte-Carlo)
+# Monte-Carlo pour échantillon unique
 #---------------------------------------------------
 
 
-ttest_normal_MC<-function(n, runs, pilote, alpha){
-  
-  # On récupère les paramètres de l'étude pilote pour le MC.
-  mean = pilote[1]
-  meanref = pilote[2]
-  s = pilote[3]
-  meand = mean-meanref
-  
-  # Independent variable (predictor)
+MC<-function(n, runs, meand, sd){
+  # Variable (predictor)
   x = c(
     rep(1,n)	# group 
   )
@@ -76,13 +93,18 @@ ttest_normal_MC<-function(n, runs, pilote, alpha){
   tval = numeric(runs) # to store resulting t statistics
   tval_hand = numeric(runs) # to store resulting t statistics (computed by hand)
   pval = numeric(runs) # to store resulting p-values
+  
+  # On applique 2 Monte Carlo : 
+  # un pour meandinf et un pour meandsup
   for (r in 1:runs) {
+
+    
     # Generate random independent samples with normal distributions
     # for the dependent variable (predicted)
     y = c(
-      rnorm(n,mean=mean,sd=s)
+      rnorm(n,mean=meand,sd=sd)
     )
-    
+
     # Run model : on stocke les t-statistics et p-values
     # du modèle généré par R.
     model = t.test(y)
@@ -91,30 +113,14 @@ ttest_normal_MC<-function(n, runs, pilote, alpha){
     
     # Hand-made equivalent to compute the t statistic
     # (will produce the same value as model$statistic)
+
     # DV for group
     y1 = y[x==1]
+    
     # Pooled standard deviation
     s12 = sd(y1)
-    tval_hand[r] = (mean(y1)-meanref)/(s12/sqrt(n))
+    tval_hand[r] = mean(y1)/(s12/sqrt(n))
   }
-  
-  # Display the resulting statistics
-  res = data.frame(
-    t_statistic=tval,
-    t_statistic_hand=tval_hand,
-    p_value=pval
-  )
-  head(res,10)
-  
-  # Histograms for the observed t statistic on independent samples
-  hist(tval,freq=FALSE,breaks=100)
-  # Curve for the theoretical distribution for independent samples
-  # (if mean = 0)
-  s_range = seq(min(tval),max(tval),length.out=100)
-  lines(s_range,dt(s_range,n+n-2))
-  # if the histogram and curve match,
-  # this means we cannot differentiate the results at chance level)
-  
   # Directly exploit the pvalues generated by the model
   # to get the power of type I error rate (depending on meand value)
   # p5_model devrait tendre vers 0.05 si meand = 0
@@ -122,36 +128,110 @@ ttest_normal_MC<-function(n, runs, pilote, alpha){
   nb = sum(pval<alpha)
   # --> signifie que si meand = 0, on conclue à tort un effet à un ratio p5_model
   # si meand != 0, on affirme à raison un effet à un ratio p5_model
-  p5_model = nb/runs
-  
+  p5_model = nb/runs # Attention : le model est ici bilatéral
   # Compute the ratio of type I errors (should be <0.5)
   # equivalent to what precedes (to help you understand the computations)
   # (using the t statistic table/function)
-  # p5_hand devrait etre égal à p5_model
-  thr_low = qt(alpha/2,n+n-2,lower.tail=T)
-  thr_upp = qt(alpha/2,n+n-2,lower.tail=F)
-  nb = sum(tval<thr_low | tval>thr_upp)
+  # On doit avoir p5_hand = p5_model
+  thr_low = qt(alpha/2,n-1,lower.tail=T)
+  thr_upp = qt(alpha/2,n-1,lower.tail=F)
+  nb = sum(tval_hand>thr_upp | tval_hand<thr_low)
   p5_hand = nb/runs
   
   # On calcule la puissance théorique (analytique) du t-test avec le package power:
-  # NB: Dans le cas n1 = n2 = n, on devrait avoir p5_package = p5_model = p5_hand.
-  p5_package = power.t.test(n=n, d = meand/s, sig.level = alpha, type = "one.sample", alternative = "one.sided")$power
-  
-  # Add these results to the global table
-  results = data.frame(
-    n=n,
-    mean=mean,
-    meanref=meanref,
-    mean_diff=meand,
-    sd=s,
-    runs=runs,
-    p5_model=p5_model,
-    p5_hand=p5_hand,
-    p5_package=p5_package 
-  )
-  results
+  # p5_model devrait tendre vers p5_package lorsque runs -> infinite.
+  p5_package = power.t.test(n=n, d = meand/sd, sig.level = alpha, type = "one.sample", alternative = "two.sided")$power
+  return(list(meand = meand, sd = sd, p5_model = p5_model, p5_hand = p5_hand, p5_package = p5_package ))
 }
-pilote = pilote_ttest_normal(npilote, mean, meanref, s)
-ttest_normal_MC(n, runs, pilote, alpha)
-# If meand=0, we expect the proportion of p-values<0.05 to be roughly at 0.05 (type I error rate)
-# If meand!=0, we expect the proportion of p-values<0.05 to be the highest possible (power)
+
+
+#---------------------------------------------------
+# t-test simulations (Monte-Carlo)
+#---------------------------------------------------
+
+
+ttest_normal<-function(n, runs, pilote){
+  
+  # On récupère les informations du pilote
+  # Pour la moyenne
+  mean = pilote$mean # moyenne empirique du pilote
+  conf_mean = pilote$conf_mean # intervalle de confiance pour la moyenne du pilote au seuil alpha = 0.05
+  # Bornes de l'intervalle de confiance de la moyenne
+  meaninf = conf_mean[1]
+  meansup = conf_mean[2]
+  # Pour l'écart-type
+  ecart_type = pilote$ecart_type  # ecart_type empirique du pilote
+  conf_sd = pilote$conf_sd # intervalle de confiance pour l'écart-type du pilote au seuil alpha = 0.05
+  # Bornes de l'intervalle de confiance de l'écart-type
+  sdinf = conf_sd[1]
+  sdsup = conf_sd[2]
+ 
+  MC_inf = MC(n,runs,meaninf,sdsup)
+  MC_sup = MC(n,runs,meansup,sdinf)
+  MC_moy = MC(n,runs,mean,ecart_type)
+    
+    # Histograms for the observed t statistic on independent samples
+    # hist(tval,freq=FALSE,breaks=100)
+    # Curve for the theoretical distribution for independent samples
+    # (if mean = 0)
+    # s_range = seq(min(tval),max(tval),length.out=100)
+    # lines(s_range,dt(s_range,n+n-2))
+    # if the histogram and curve match,
+    # this means we cannot differentiate the results at chance level)
+
+  IC_Puissance_model = c(MC_inf$p5_hand,MC_sup$p5_hand)
+  IC_Puissance_hand = c(MC_inf$p5_model,MC_sup$p5_model)
+  IC_Puissance_package = c(MC_inf$p5_package,MC_sup$p5_package)
+  
+  # On présente les résultats sur la puissance:
+  # La puissance à partir des paramètres empiriques du pilote, 
+  # Puis les intervalles de confiance de la puissance calculés
+  # à partir des intervalles de confiance des paramètres.
+  # NB : 
+  Puissance_moy_hand = MC_moy$p5_hand
+  Puissance_moy_model = MC_moy$p5_model
+  Puissance_moy_package = MC_moy$p5_package
+    results = data.frame(
+      n=n,
+      runs = runs,
+      Puissance_moy_hand = Puissance_moy_hand,
+      IC_Puissance_hand_inf = IC_Puissance_hand[1],
+      IC_Puissance_hand_sup = IC_Puissance_hand[2],
+      Puissance_moy_model = Puissance_moy_model,
+      IC_Puissance_model_inf = IC_Puissance_model[1],
+      IC_Puissance_model_sup = IC_Puissance_model[2],
+      Puissance_moy_package = MC_moy$p5_package,
+      IC_Puissance_package_inf = IC_Puissance_package[1],
+      IC_Puissance_package_sup = IC_Puissance_package[2]
+    )
+  return (results)
+}
+
+
+
+#---------------------------------------------------
+# Test : Puissance en fonction de la taille de l'échantillon.
+# (Calcul basé sur l'algorithme de Monte Carlo )
+#---------------------------------------------------
+
+TEST<-function(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles){
+  # Création du pilote
+  pilote = pilote_ttest_normal(npilote, meand, sd, runs_bs_pilote)
+  # On regarde la puissance en fonction de la taille d'échantillon
+  # (!= npilote, qui est la taille du pilote.
+  # ici, la taille de l'échantillon correspond à la taille des tirages pour Monte-Carlo)
+  longueur = length(tailles)
+  puissances = rep(0,longueur)
+  IC_low_width = numeric(longueur)
+  IC_up_width = numeric(longueur)
+  for (i in 1:longueur){
+    results = ttest_normal(tailles[i],runs_MC,pilote)
+    puissances[i] = results$Puissance_moy_hand
+    IC_low_width[i] =  puissances[i] - results$IC_Puissance_hand_inf
+    IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
+  }
+  plotCI(tailles, puissances, uiw = IC_up_width, liw = IC_low_width, type = "o", barcol = "red")
+  results # affiche les puissances pour le dernier tirage de Monte Carlo
+}
+
+TEST(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles)
