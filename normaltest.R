@@ -12,25 +12,14 @@ library(gplots)
 #-----------------------------------------------------------------------
 
 
+## Pilote
+
 # Taille de l'échantillon pilote
-npilote = 60
-# Intervalle du pilote
-tailles_pilote = 10*(1:10)
+npilote = 15
+
 # Nombre de runs pour le Bootstrap du pilote,
 # servant à estimer un intervalle de confiance pour l'écart-type du pilote
 runs_bs_pilote = 1000
-
-# Taille des tirages pour Monte-Carlo.
-n = 500
-# Intervalle des tirages pour Monte-Carlo.
-tailles = 10*(2:10)
-# Number of runs for MC
-runs_MC = 1000
-
-# Nombre d'échantillon pilote que l'on tire (d'une taille npilote fixée)
-# pour évaluer l'effet de la taille de l'échantillon pilote
-runs_pilote = 100
-
 # Difference between the means:
 # no difference to test the alpha level (type I errors)
 meand = 0
@@ -45,6 +34,17 @@ sd = 0.7
 
 # Erreur de 1ère espèce : toujours égale à 0.05
 alpha = 0.05
+
+## Monte Carlo
+
+
+# Intervalle des tirages pour Monte-Carlo.
+tailles = 10*(2:10)
+# Number of runs for MC
+runs_MC = 1000
+
+
+
 
 
 
@@ -61,7 +61,7 @@ pilote_ttest_normal<-function(npilote, meand, sd, runs_bs_pilote)
   meand2 = mean(echantillon)
   ecart_type = sd(echantillon)
   # On détermine l'intervalle de confiance de la moyenne avec la fonction confint de R
-  conf_mean = t.test(echantillon)$conf.int
+  conf_mean = t.test(echantillon,conf.level = alpha)$conf.int
   # On détermine l'intervalle de confiance de l'écart-type avec un Bootstrap
   table_sd = numeric(runs_bs_pilote)
   for(i in 1:runs_bs_pilote)
@@ -82,7 +82,7 @@ pilote_ttest_normal<-function(npilote, meand, sd, runs_bs_pilote)
 #---------------------------------------------------
 
 
-MC<-function(n,runs,meand,sd){
+MC<-function(n, runs, meand, sd){
   # Variable (predictor)
   x = c(
     rep(1,n)	# group 
@@ -210,16 +210,11 @@ ttest_normal<-function(n, runs, pilote){
 
 
 #---------------------------------------------------
-# Puissance en fonction de la taille de l'échantillon du Monte-Carlo
-# (et non pas de la taille du pilote!)
+# Test : Puissance en fonction de la taille de l'échantillon.
+# (Calcul basé sur l'algorithme de Monte Carlo )
 #---------------------------------------------------
 
-
-#---------------------------------------------------
-# Test
-#---------------------------------------------------
-
-TEST<-function(npilote, n, meand, sd, runs_bs_pilote, runs_MC, runs_pilote, tailles, tailles_pilote){
+TEST<-function(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles){
   # Création du pilote
   pilote = pilote_ttest_normal(npilote, meand, sd, runs_bs_pilote)
   # On regarde la puissance en fonction de la taille d'échantillon
@@ -236,8 +231,7 @@ TEST<-function(npilote, n, meand, sd, runs_bs_pilote, runs_MC, runs_pilote, tail
     IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
   }
   plotCI(tailles, puissances, uiw = IC_up_width, liw = IC_low_width, type = "o", barcol = "red")
-  longueur = length(tailles_pilote)
-  results
+  results # affiche les puissances pour le dernier tirage de Monte Carlo
 }
 
-TEST(npilote, n, meand, sd, runs_bs_pilote, runs_MC, runs_pilote, tailles, tailles_pilote)
+TEST(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles)
