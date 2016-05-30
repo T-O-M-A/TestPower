@@ -113,7 +113,7 @@
     </task>
     <task id="32" name="Interface Graphique" note="" work="144000" start="20160526T000000Z" end="20160601T170000Z" work-start="20160526T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <constraint type="must-start-on" time="20160526T000000Z"/>
-      <task id="33" name="Interface Graphique" note="" work="144000" start="20160526T000000Z" end="20160601T170000Z" work-start="20160526T080000Z" percent-complete="13" priority="0" type="normal" scheduling="fixed-work">
+      <task id="33" name="Interface Graphique" note="" work="144000" start="20160526T000000Z" end="20160601T170000Z" work-start="20160526T080000Z" percent-complete="43" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160526T000000Z"/>
       </task>
     </task>

@@ -5,7 +5,9 @@
  */
 package Interface;
 
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -34,10 +36,15 @@ public class BoutonCasReel extends JButton {
         this.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 fen_act.setVisible(false);
-                fen_act.prec.ret.setEnabled(true);
-                fen_act.prec.next.setEnabled(true);
-                fen_act.prec.setVisible(true);
-                fen_act.prec.setSuiv(fen_act);
+                FenetreCas new_fen = new FenetreCas("Cas Réel",
+                        new Dimension(1100, 650),
+                        fen_act,
+                        null,
+                        fen_act.home,
+                        null,
+                        "Réel");
+                new_fen.ret.setEnabled(true);
+                new_fen.next.setEnabled(false);
             }
         }
         );

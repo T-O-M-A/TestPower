@@ -8,17 +8,15 @@ package Interface;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import static javax.swing.border.TitledBorder.CENTER;
 
 /**
  *
@@ -39,42 +37,120 @@ public class FenetreCas extends Fenetre {
         fen = this;
         this.cas = cas;
 
-        JPanel panCas = new JPanel();
-        panCas.setBackground(Color.white);
-        panCas.setPreferredSize(new Dimension((int) (dim.width * 0.95), (int) ((dim.height - 100) * 0.8)));
-        panCas.setBorder(BorderFactory.createTitledBorder("Cas : " + cas));
-
-        JLabel image;
+        Image img;
         switch (cas) {
-            case "simple":
-                image = new JLabel(new ImageIcon("loi_n.png"));                
+            case "Simple":
+                try {
+                    img = ImageIO.read(getClass().getResource("loi_n.png"));
+                } catch (IOException e) {
+                    img = null;
+                }
                 break;
-            case "regression":
-                image = new JLabel(new ImageIcon("linear_r.png")); 
+            case "Regression":
+                try {
+                    img = ImageIO.read(getClass().getResource("linear_r.png"));
+                } catch (IOException e) {
+                    img = null;
+                }
                 break;
             default:
-                image = new JLabel(new ImageIcon("donnees.png")); 
+                try {
+                    img = ImageIO.read(getClass().getResource("donnees.gif"));
+                } catch (IOException e) {
+                    img = null;
+                }
                 break;
         }
-        panCas.add(image);
+
+        JPanel panCas = new ImagePane(img);
+        panCas.setBackground(Color.white);
+        panCas.setLayout(new BorderLayout());
+        panCas.setPreferredSize(new Dimension((int) (dim.width * 0.95), (int) ((dim.height - 100) * 0.33)));
+        panCas.setBorder(BorderFactory.createTitledBorder("Cas : " + cas));
 
         JPanel panDescr = new JPanel();
-        panDescr.setBackground(Color.white);
-        panDescr.setPreferredSize(new Dimension((int) (dim.width * 0.50), (int) ((dim.height - 100) * 0.4)));
-        panDescr.setBorder(BorderFactory.createTitledBorder("Description"));
-        panCas.add(panDescr);
-        
+        panDescr.setBackground(Color.gray);
+        panDescr.setPreferredSize(new Dimension((int) (dim.width * 0.6675), (int) ((dim.height - 100) * 0.5)));
+        panDescr.setBorder(BorderFactory.createTitledBorder("<html><font color = white >Description</font></html>"));
+        panCas.add(panDescr, BorderLayout.EAST);
+
         this.getContentPane().add(panCas);
-        
+
         JPanel panChoix = new JPanel();
         panChoix.setBackground(Color.white);
-        panChoix.setPreferredSize(new Dimension((int) (dim.width * 0.95), (int) ((dim.height - 100) * 0.8)));
+        panChoix.setLayout(new BorderLayout());
+        panChoix.setPreferredSize(new Dimension((int) (dim.width * 0.95), (int) ((dim.height - 100) * 0.6)));
         panChoix.setBorder(BorderFactory.createTitledBorder("Choisissez un sous-type de cas"));
-        
-        
-        
+
+        switch (cas) {
+            case "Simple":
+                JPanel panStudent = new JPanel();
+                panStudent.setBackground(Color.lightGray);
+                //panStudent.setLayout(new BorderLayout());
+                panStudent.setPreferredSize(new Dimension((int) (dim.width * 0.467), (int) ((dim.height - 100) * 0.3)));
+                panStudent.setBorder(BorderFactory.createTitledBorder("t-Test de Student"));
+
+                JPanel panUn = new JPanel();
+                panUn.setBackground(Color.white);
+                panUn.setPreferredSize(new Dimension((int) (dim.width * 0.458), (int) ((dim.height - 100) * 0.162)));
+                panUn.setBorder(BorderFactory.createTitledBorder("Un Échantillon"));
+                panStudent.add(panUn);
+
+                JPanel panApp = new JPanel();
+                panApp.setBackground(Color.white);
+                panApp.setPreferredSize(new Dimension((int) (dim.width * 0.458), (int) ((dim.height - 100) * 0.162)));
+                panApp.setBorder(BorderFactory.createTitledBorder("Deux Échantillons Appariés"));
+                panStudent.add(panApp);
+
+                JPanel panInd = new JPanel();
+                panInd.setBackground(Color.white);
+                panInd.setPreferredSize(new Dimension((int) (dim.width * 0.458), (int) ((dim.height - 100) * 0.162)));
+                panInd.setBorder(BorderFactory.createTitledBorder("Deux Échantillons Indépendants"));
+                panStudent.add(panInd);
+
+                panChoix.add(panStudent, BorderLayout.WEST);
+
+                JPanel panAutre = new JPanel();
+                panAutre.setBackground(Color.white);
+                panAutre.setLayout(new BorderLayout());
+                panAutre.setPreferredSize(new Dimension((int) (dim.width * 0.467), (int) ((dim.height - 100) * 0.3)));
+
+                JPanel panCorr = new JPanel();
+                panCorr.setBackground(Color.lightGray);
+                panCorr.setPreferredSize(new Dimension((int) (dim.width * 0.467), (int) ((dim.height - 100) * 0.27)));
+                panCorr.setBorder(BorderFactory.createTitledBorder("Test de Corrélation de Pearson"));
+
+                JPanel panIntCorr = new JPanel();
+                panIntCorr.setBackground(Color.white);
+                panIntCorr.setPreferredSize(new Dimension((int) (dim.width * 0.45), (int) ((dim.height - 100) * 0.215)));
+                panCorr.add(panIntCorr);
+
+                panAutre.add(panCorr, BorderLayout.NORTH);
+
+                JPanel panAnova = new JPanel();
+                panAnova.setBackground(Color.lightGray);
+                panAnova.setPreferredSize(new Dimension((int) (dim.width * 0.467), (int) ((dim.height - 100) * 0.27)));
+                panAnova.setBorder(BorderFactory.createTitledBorder("Test d'ANOVA"));
+                panAutre.add(panAnova, BorderLayout.SOUTH);
+
+                JPanel panIntAnova = new JPanel();
+                panIntAnova.setBackground(Color.white);
+                panIntAnova.setPreferredSize(new Dimension((int) (dim.width * 0.45), (int) ((dim.height - 100) * 0.215)));
+                panAnova.add(panIntAnova);
+
+                panChoix.add(panAutre, BorderLayout.EAST);
+                break;
+
+            case "Regression":
+
+                break;
+            default:
+
+                break;
+        }
+
         this.getContentPane().add(panChoix);
-        
+
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 if (JOptionPane.showConfirmDialog(fen,
@@ -90,5 +166,4 @@ public class FenetreCas extends Fenetre {
         }
         );
     }
-
 }

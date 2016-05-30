@@ -26,6 +26,7 @@ public class BoutonRetour extends JButton {
                 fen_act.prec.ret.setEnabled(true);
                 fen_act.prec.next.setEnabled(false);
                 fen_act.prec.setVisible(true);
+                fen_act.prec.setPrec(null);
                 fen_act.prec.setSuiv(fen_act);
             }
         });
