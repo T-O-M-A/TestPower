@@ -8,13 +8,17 @@ public class ImagePane extends JPanel {
      
     private static final long   serialVersionUID    = 1L;
      
-    protected Image buffer;    
+    protected Image buffer;  
+    public int x;
+    public int y;
      
-    public ImagePane(Image buffer){
+    public ImagePane(Image buffer, int x, int y){
         this.buffer = buffer;
+        this.x = x;
+        this.y = y;
     }  
          
     public void paintComponent(Graphics g) {
-       g.drawImage(buffer,5,15,null);
+       g.drawImage(buffer,x,y,null);
      }
 }

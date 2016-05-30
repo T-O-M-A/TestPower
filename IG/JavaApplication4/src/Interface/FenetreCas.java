@@ -13,6 +13,8 @@ import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
@@ -62,7 +64,7 @@ public class FenetreCas extends Fenetre {
                 break;
         }
 
-        JPanel panCas = new ImagePane(img);
+        JPanel panCas = new ImagePane(img, 5, 15);
         panCas.setBackground(Color.white);
         panCas.setLayout(new BorderLayout());
         panCas.setPreferredSize(new Dimension((int) (dim.width * 0.95), (int) ((dim.height - 100) * 0.33)));
@@ -86,25 +88,52 @@ public class FenetreCas extends Fenetre {
             case "Simple":
                 JPanel panStudent = new JPanel();
                 panStudent.setBackground(Color.lightGray);
-                //panStudent.setLayout(new BorderLayout());
                 panStudent.setPreferredSize(new Dimension((int) (dim.width * 0.467), (int) ((dim.height - 100) * 0.3)));
                 panStudent.setBorder(BorderFactory.createTitledBorder("t-Test de Student"));
 
-                JPanel panUn = new JPanel();
+                Image imgUn;
+                 {
+                    try {
+                        imgUn = ImageIO.read(getClass().getResource("min_one_sample.png"));
+                    } catch (IOException ex) {
+                        imgUn = null;
+                    }
+                }
+
+                JPanel panUn = new ImagePane(imgUn, 5, 15);
                 panUn.setBackground(Color.white);
-                panUn.setPreferredSize(new Dimension((int) (dim.width * 0.458), (int) ((dim.height - 100) * 0.162)));
+                panUn.setPreferredSize(new Dimension((int) (dim.width * 0.229), (int) ((dim.height - 100) * 0.162)));
                 panUn.setBorder(BorderFactory.createTitledBorder("Un Échantillon"));
                 panStudent.add(panUn);
+                System.out.println((int) (dim.width * 0.229) + " " + (int) ((dim.height - 100) * 0.162));
 
-                JPanel panApp = new JPanel();
+                Image imgApp;
+                 {
+                    try {
+                        imgApp = ImageIO.read(getClass().getResource("min_paired.png"));
+                    } catch (IOException ex) {
+                        imgApp = null;
+                    }
+                }
+
+                JPanel panApp = new ImagePane(imgApp, 5, 15);
                 panApp.setBackground(Color.white);
-                panApp.setPreferredSize(new Dimension((int) (dim.width * 0.458), (int) ((dim.height - 100) * 0.162)));
+                panApp.setPreferredSize(new Dimension((int) (dim.width * 0.229), (int) ((dim.height - 100) * 0.162)));
                 panApp.setBorder(BorderFactory.createTitledBorder("Deux Échantillons Appariés"));
                 panStudent.add(panApp);
 
-                JPanel panInd = new JPanel();
+                Image imgInd;
+                 {
+                    try {
+                        imgInd = ImageIO.read(getClass().getResource("min_indp.png"));
+                    } catch (IOException ex) {
+                        imgInd = null;
+                    }
+                }
+
+                JPanel panInd = new ImagePane(imgInd, 5, 15);
                 panInd.setBackground(Color.white);
-                panInd.setPreferredSize(new Dimension((int) (dim.width * 0.458), (int) ((dim.height - 100) * 0.162)));
+                panInd.setPreferredSize(new Dimension((int) (dim.width * 0.229), (int) ((dim.height - 100) * 0.162)));
                 panInd.setBorder(BorderFactory.createTitledBorder("Deux Échantillons Indépendants"));
                 panStudent.add(panInd);
 
