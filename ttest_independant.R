@@ -59,8 +59,7 @@ ttest_MC_samevar<-function(runs, meand, n1, n2, s, alpha){
     # Run model : on stocke les t-statistics et p-values
     # du modèle généré par R.
     model = t.test(y~x, var.equal=TRUE)
-    tval[r] = model$statistic
-    pval[r] = model$p.value
+   
     
     # Hand-made equivalent to compute the t statistic
     # (will produce the same value as model$statistic)
@@ -124,6 +123,6 @@ ttest_MC_samevar<-function(runs, meand, n1, n2, s, alpha){
   )
   results
 }
-ttest_MC_samevar(runs, meand0, n1, n2, s, alpha)
+ttest_MC_samevar(runs, meand, n1, n2, s, alpha)
 # If meand=0, we expect the proportion of p-values<0.05 to be roughly at 0.05 (type I error rate)
 # If meand!=0, we expect the proportion of p-values<0.05 to be the highest possible (power)
