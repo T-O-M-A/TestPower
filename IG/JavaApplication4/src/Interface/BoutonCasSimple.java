@@ -19,7 +19,7 @@ import javax.swing.JButton;
  */
 public class BoutonCasSimple extends JButton {
 
-    public BoutonCasSimple(Fenetre fen_act, Boolean enabled) {
+    public BoutonCasSimple(final Fenetre fen_act, Boolean enabled) {
         super();
 
         try {

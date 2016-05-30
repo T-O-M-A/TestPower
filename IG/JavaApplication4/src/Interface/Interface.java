@@ -18,7 +18,7 @@ public class Interface {
      */
     public static void main(String[] args) {
         Fenetre fen = new FenetreOuverture("Fenetre Principale",
-                new Dimension(1100, 400), null, null, null);
+                new Dimension(1100, 400), null, null, null, null);
     }
 
 }

@@ -15,7 +15,7 @@ import javax.swing.JButton;
  */
 public class BoutonSuivant extends JButton {
         
-    BoutonSuivant(String nom, Fenetre fen_act, Boolean enabled){
+    BoutonSuivant(String nom, final Fenetre fen_act, Boolean enabled){
         super(nom);
         
         setEnabled(enabled);

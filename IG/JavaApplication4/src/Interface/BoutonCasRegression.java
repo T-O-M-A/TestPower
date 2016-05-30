@@ -19,7 +19,7 @@ import javax.swing.JButton;
  */
 public class BoutonCasRegression extends JButton {
 
-    public BoutonCasRegression(Fenetre fen_act, Boolean enabled) {
+    public BoutonCasRegression(final Fenetre fen_act, Boolean enabled) {
         super();
 
         try {

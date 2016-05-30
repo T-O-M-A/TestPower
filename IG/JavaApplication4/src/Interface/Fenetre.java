@@ -31,9 +31,13 @@ public class Fenetre extends JFrame {
     public Fenetre suiv;
     public Fenetre home;
 
-    public Fenetre(String title, Dimension dim, Fenetre prec, Fenetre suiv, Fenetre home) {
+    public Fenetre(String title,
+            Dimension dim,
+            Fenetre prec,
+            Fenetre suiv,
+            Fenetre home,
+            Point loc) {
 
-        fen = this;
         this.title = title;
         this.dim = dim;
         this.prec = prec;
@@ -42,22 +46,11 @@ public class Fenetre extends JFrame {
 
         this.setTitle(title);
         this.setSize(dim);
-        this.setLocationRelativeTo(null);
-
-        this.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                if (JOptionPane.showConfirmDialog(fen,
-                        "Voulez-vous fermer l'application ?", "Fermeture ?",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                    System.exit(0);
-                } else {
-                    Fenetre fen = new FenetreOuverture("Fenetre Principale",
-                new Dimension(700, 500), null, null, null);
-                }
-            }
+        if (loc == null) {
+            this.setLocationRelativeTo(null);
+        } else {
+            this.setLocation(loc);
         }
-        );
 
         Font police = new Font("Arial", Font.BOLD, 14);
 
@@ -117,5 +110,4 @@ public class Fenetre extends JFrame {
     public void setSuiv(Fenetre fen) {
         this.suiv = fen;
     }
-
 }

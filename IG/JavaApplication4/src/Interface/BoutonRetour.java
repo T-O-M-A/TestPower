@@ -15,7 +15,7 @@ import javax.swing.JButton;
  */
 public class BoutonRetour extends JButton {
     
-    BoutonRetour(String nom, Fenetre fen_act, Boolean enabled){
+    BoutonRetour(String nom, final Fenetre fen_act, Boolean enabled){
         super(nom);
         
         setEnabled(enabled);

@@ -19,7 +19,7 @@ import javax.swing.JButton;
  */
 public class BoutonHome extends JButton {
 
-    public BoutonHome(Fenetre fen_act, Boolean enabled) {
+    public BoutonHome(final Fenetre fen_act, Boolean enabled) {
         super();
 
         try {
