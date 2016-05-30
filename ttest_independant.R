@@ -13,13 +13,13 @@ rm(list=ls())
 
 # Taille des échantillons pilotes
 # Non nécessairement égaux (dépend des ressources disponibles)
-npilote_congruent = 40
-npilote_incongruent = 25
+npilote_congruent = 20
+npilote_incongruent = 20
 
 # Taille des tirages pour Monte-Carlo.
 # On les prends égaux de préférence.
-n1 = 50
-n2 = 50
+n1 = 20
+n2 = 20
 # Number of runs for MC
 runs = 1000
 
@@ -28,7 +28,7 @@ runs = 1000
 # no difference to test the alpha level (type I errors)
 meand = 0
 # non null to test how often the existing effect is found (power)
-meand = 0.04
+meand = 0.1
 
 # Standard deviation of both samples
 s = 0.1
@@ -53,9 +53,12 @@ pilote_ttest_independants<-function(npilote_congruent, npilote_incongruent, mean
   # On suppose leur écart-type égal.
   # On l'estime donc par une moyenne de leur écart-type empirique.
   ecart_type = (sd(congruent)+sd(incongruent))/2
+  # On détermine l'intervalle de confiance du ttest
+  conf = t.test(incongruent,congruent)$conf.int
   # On retourne l'approximation de l'étude pilote
-  return (c(mean1, mean2, ecart_type))
+  return (list(mean1=mean1, mean2=mean2, ecart_type=ecart_type, conf=conf))
 }
+
 
 
 
@@ -63,15 +66,9 @@ pilote_ttest_independants<-function(npilote_congruent, npilote_incongruent, mean
 # t-test simulations (Monte-Carlo)
 #---------------------------------------------------
 
-ttest_independants_MC<-function(runs, pilote, n1, n2, alpha){
+ttest_independants_MC<-function(runs, meand, n1, n2, alpha){
  
-  
-   # On récupère les paramètres de l'étude pilote pour le MC.
-  mean1 = pilote[1]
-  mean2 = pilote[2]
-  s = pilote[3]
-  meand = mean2-mean1
-  
+
   # Independent variable (predictor)
   x = c(
     rep(1,n1),	# group 1
@@ -87,15 +84,10 @@ ttest_independants_MC<-function(runs, pilote, n1, n2, alpha){
     # Generate random independent samples with normal distributions
     # for the dependent variable (predicted)
     y = c(
-      rnorm(n1,mean=mean1,sd=s),
-      rnorm(n2,mean=mean2,sd=s)
+      rnorm(n1,mean=0,sd=s),
+      rnorm(n2,mean=meand,sd=s)
     )
-    
-    # Run model : on stocke les t-statistics et p-values
-    # du modèle généré par R.
-    model = t.test(y~x, var.equal=TRUE)
-   
-    
+
     # Hand-made equivalent to compute the t statistic
     # (will produce the same value as model$statistic)
     # DV for each group
@@ -104,6 +96,14 @@ ttest_independants_MC<-function(runs, pilote, n1, n2, alpha){
     # Pooled standard deviation
     s12 = sqrt((sd(y1)^2+sd(y2)^2)/(n1+n2-2))
     tval_hand[r] = (mean(y1)-mean(y2))/(s12*sqrt((1/n1)+(1/n2)))
+    
+    
+    # Run model : on stocke les t-statistics et p-values
+    # du modèle généré par R.
+    model = t.test(y2, y1, var.equal=TRUE)
+    tval[r] = model$statistic
+    pval[r] = model$p.value
+    
   }
   
   # Display the resulting statistics
@@ -144,7 +144,7 @@ ttest_independants_MC<-function(runs, pilote, n1, n2, alpha){
   # On calcule la puissance théorique (analytique) du t-test avec le package power:
   # NB: Dans le cas n1 = n2 = n, on devrait avoir p5_package = p5_model = p5_hand.
   p5_package = power.t.test(n=(n1+n2)/2, d = meand/s, sig.level = alpha, type = "two.sample", alternative = "two.sided")$power
-  
+
   # Add these results to the global table
   results = data.frame(
     n1=n1,
@@ -154,8 +154,22 @@ ttest_independants_MC<-function(runs, pilote, n1, n2, alpha){
     runs=runs,
     p5_model=p5_model,
     p5_hand=p5_hand,
-    p5_package=p5_package 
+    p5_package=p5_package
   )
+  return(results)
+}
+pilote = pilote_ttest_independants(npilote_congruent, npilote_incongruent, meand, s)
+conf_int = pilote$conf
+meandinf = conf_int[1]
+meandsup = conf_int[2]
+resinf = ttest_independants_MC(runs, meandinf, n1, n2, alpha)
+ressup = ttest_independants_MC(runs, meandsup, n1, n2, alpha)
+resmoy = ttest_independants_MC(runs, meand, n1, n2, alpha)
+results = data.frame(
+  resinf = resinf,
+  ressup = ressup,
+  resmoy = resmoy
+)
 results
 # If meand=0, we expect the proportion of p-values<0.05 to be roughly at 0.05 (type I error rate)
 # If meand!=0, we expect the proportion of p-values<0.05 to be the highest possible (power)

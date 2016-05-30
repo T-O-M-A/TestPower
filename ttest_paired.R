@@ -63,7 +63,7 @@ pilote_ttest_paired<-function(npilote, meand, s1, s2, cf)
   mean2 = mean(incongruent)
   ecart_type_congruent = sd(congruent)
   ecart_type_incongruent = sd(incongruent)
-  cf_estime = cov(congruent,incongruent)/(sd(congruent)*sd(incongruent))
+  cf_estime = cor(congruent, incongruent)
   # On retourne l'approximation de l'étude pilote
   return (c(mean1, mean2, ecart_type_congruent, ecart_type_incongruent, cf_estime))
 }
