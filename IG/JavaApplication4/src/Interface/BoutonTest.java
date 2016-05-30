@@ -18,19 +18,10 @@ import javax.swing.JButton;
  *
  * @author lairt
  */
-public class BoutonCasReel extends JButton {
+public class BoutonTest extends JButton {
 
-    public BoutonCasReel(final Fenetre fen_act, Boolean enabled) {
-        super();
-
-        try {
-            Image img = ImageIO.read(getClass().getResource("donnees.gif"));
-            setIcon(new ImageIcon(img));
-        } catch (IOException e) {
-
-        }
-
-        setEnabled(enabled);
+    public BoutonTest(final Fenetre fen_act) {
+        super("Vérification du Test");
 
         this.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {

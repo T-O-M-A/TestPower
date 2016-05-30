@@ -3,14 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/user/3/.base/lairt/home/Bureau/ProjetSpe/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/Interface.java</file>
-            <file>file:/user/3/.base/lairt/home/Bureau/ProjetSpe/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/FenetreCas.java</file>
-            <file>file:/user/3/.base/lairt/home/Bureau/ProjetSpe/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonCasSimple.java</file>
-            <file>file:/user/3/.base/lairt/home/Bureau/ProjetSpe/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/ImagePane.java</file>
-            <file>file:/user/3/.base/lairt/home/Bureau/ProjetSpe/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/Fenetre.java</file>
-            <file>file:/user/3/.base/lairt/home/Bureau/ProjetSpe/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/FenetreOuverture.java</file>
-            <file>file:/user/3/.base/lairt/home/Bureau/ProjetSpe/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonCasReel.java</file>
-            <file>file:/user/3/.base/lairt/home/Bureau/ProjetSpe/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonCasRegression.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/Fenetre.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/FenetreCas.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonTest.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonCasRegression.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonSuivant.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/Interface.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonCasReel.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonPuissance.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/FenetreOuverture.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonCasSimple.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonRetour.java</file>
+            <file>file:/home/thomas/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/BoutonHome.java</file>
         </group>
     </open-files>
 </project-private>
