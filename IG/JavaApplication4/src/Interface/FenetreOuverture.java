@@ -28,7 +28,8 @@ public class FenetreOuverture extends Fenetre {
             Fenetre prec,
             Fenetre suiv,
             Fenetre home,
-            Point location) {
+            Point location,
+            Boolean bool) {
         super(title, dim, prec, suiv, home, location);
         fen = this;
         this.getContentPane().add(new JLabel("Projet de Spécialité - Estimation de Puissance à Posteriori"));
@@ -77,7 +78,7 @@ public class FenetreOuverture extends Fenetre {
                     System.exit(0);
                 } else {
                     FenetreOuverture new_fen = new FenetreOuverture("Fenetre Principale",
-                            new Dimension(fen.getWidth(), fen.getHeight()), fen.prec, fen.suiv, fen.home, fen.getLocation());
+                            new Dimension(fen.getWidth(), fen.getHeight()), fen.prec, fen.suiv, fen.home, fen.getLocation(), false);
 
                 }
             }

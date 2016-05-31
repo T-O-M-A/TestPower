@@ -17,8 +17,8 @@ public class Interface {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Fenetre fen = new FenetreOuverture("Fenetre Principale",
-                new Dimension(1100, 400), null, null, null, null);
+        Fenetre fen = new FenetreOuverture("Menu Principal",
+                new Dimension(1100, 400), null, null, null, null, true);
     }
 
 }

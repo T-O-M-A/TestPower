@@ -14,19 +14,17 @@ import javax.swing.JButton;
  * @author Lair Thomas, Bonjean Grégoire & Crépin Baptiste
  */
 public class BoutonRetour extends JButton {
-    
-    BoutonRetour(String nom, final Fenetre fen_act, Boolean enabled){
+
+    BoutonRetour(String nom, final Fenetre fen_act, Boolean enabled) {
         super(nom);
-        
+
         setEnabled(enabled);
-        
+
         this.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 fen_act.setVisible(false);
-                fen_act.prec.ret.setEnabled(true);
-                fen_act.prec.next.setEnabled(false);
+                fen_act.prec.next.setEnabled(true);
                 fen_act.prec.setVisible(true);
-                fen_act.prec.setPrec(null);
                 fen_act.prec.setSuiv(fen_act);
             }
         });

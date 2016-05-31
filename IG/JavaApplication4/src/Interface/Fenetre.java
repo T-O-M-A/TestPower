@@ -79,7 +79,7 @@ public class Fenetre extends JFrame {
             boolRetour = true;
         }
 
-        if (this.prec == null) {
+        if (this.suiv == null) {
             boolSuivant = false;
         } else {
             boolSuivant = true;

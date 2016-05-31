@@ -35,13 +35,13 @@ public class BoutonCasRegression extends JButton {
         this.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 fen_act.setVisible(false);
-                FenetreCas new_fen = new FenetreCas("Cas Regression",
+                FenetreCas new_fen = new FenetreCas("Cas Régression",
                         new Dimension(1100, 650),
                         fen_act,
                         null,
                         fen_act.home,
                         null,
-                        "Regression");
+                        "Régression");
                 new_fen.ret.setEnabled(true);
                 new_fen.next.setEnabled(false);
             }

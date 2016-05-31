@@ -24,10 +24,8 @@ public class BoutonSuivant extends JButton {
             public void actionPerformed(ActionEvent event) {
                 fen_act.setVisible(false);
                 fen_act.suiv.ret.setEnabled(true);
-                fen_act.suiv.next.setEnabled(false);
                 fen_act.suiv.setVisible(true);
                 fen_act.suiv.setPrec(fen_act);
-                fen_act.suiv.setSuiv(null);
             }
         });
     }
