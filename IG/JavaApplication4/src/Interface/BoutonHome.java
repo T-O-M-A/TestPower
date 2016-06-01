@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,21 +24,28 @@ public class BoutonHome extends JButton {
         super();
 
         try {
-        Image img = ImageIO.read(getClass().getResource("home.png"));
-        setIcon(new ImageIcon(img));
+            Image img = ImageIO.read(getClass().getResource("home.png"));
+            setIcon(new ImageIcon(img));
         } catch (IOException e) {
-            
+
         }
 
         setEnabled(enabled);
 
         this.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                fen_act.setVisible(false);
-                fen_act.prec.ret.setEnabled(true);
-                fen_act.prec.next.setEnabled(true);
-                fen_act.prec.setVisible(true);
-                fen_act.prec.setSuiv(fen_act);
+                if (JOptionPane.showConfirmDialog(fen_act,
+                        "Voulez-vous revenir au menu principal ?", "Home ?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                    fen_act.setVisible(false);
+                    fen_act.home.ret.setEnabled(false);
+                    fen_act.home.next.setEnabled(false);
+                    fen_act.home.setVisible(true);
+                    fen_act.home.setSuiv(null);
+                    fen_act.home.setPrec(null);
+                    
+                }
             }
         }
         );
