@@ -20,5 +20,4 @@ public class Interface {
         Fenetre fen = new FenetreOuverture("Menu Principal",
                 new Dimension(1100, 400), null, null, null, null, true);
     }
-
 }
