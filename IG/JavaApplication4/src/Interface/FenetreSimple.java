@@ -10,9 +10,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.rosuda.JRI.Rengine;
 
 /**
  *
@@ -30,7 +35,7 @@ public class FenetreSimple extends Fenetre {
     String cas;
 
     public FenetreSimple(String title,
-            Dimension dim,
+            final Dimension dim,
             Fenetre prec,
             Fenetre suiv,
             Fenetre home,
@@ -254,8 +259,39 @@ public class FenetreSimple extends Fenetre {
 
                 panDonneesUn.add(panDroiteUn, BorderLayout.EAST);
 
-                JButton boutonValUn = new JButton("Valider");
+                final JButton boutonValUn = new JButton("Valider");
                 boutonValUn.setPreferredSize(new Dimension((int) (dim.width * 0.22), (int) ((dim.height - 100) * 0.15)));
+
+                panChoix.add(panStudent, BorderLayout.WEST);
+//                final Rengine eng = new Rengine(new String[]{"--no-save"}, false, null);
+//                boutonValUn.addActionListener(new ActionListener() {
+//                    public void actionPerformed(ActionEvent event) {
+//                        boutonValUn.setEnabled(false);
+//
+//                        if (!eng.waitForR()) {
+//                            System.out.println("Cannot load R");
+//                            System.exit(1);
+//                        }
+//                        eng.eval("x=seq(0,2,by=0.01)");
+//                        eng.eval("y=2*sin(2*pi*(x-1/4))");
+//                        eng.eval("jpeg('/home/thomas/Bureau/ProjetSpe/Projet-Specialite-Calcul-de-Puissance/IG/JavaApplication4/src/Interface/rplot.jpg')");
+//                        eng.eval("plot(x,y)");
+//                        eng.eval("dev.off()");
+//                        System.out.println("bla");
+//
+//                        Image img;
+//
+//                        try {
+//                            img = ImageIO.read(getClass().getResource("rplot.jpg"));
+//                            img.getScaledInstance(600, 600, Image.SCALE_DEFAULT);
+//                        } catch (IOException ex) {
+//                            img = null;
+//                            Logger.getLogger(FenetreSimple.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                        boutonValUn.setEnabled(true);
+//                    }
+//                }
+//                );
 
                 panPuissanceSimple.add(panDonneesUn, BorderLayout.NORTH);
                 panPuissanceSimple.add(boutonValUn);
@@ -432,13 +468,10 @@ public class FenetreSimple extends Fenetre {
                 break;
         }
 
-        panChoix.add(panStudent, BorderLayout.WEST);
-
         JPanel panObs = new JPanel();
         panObs.setBackground(Color.white);
         panObs.setPreferredSize(new Dimension((int) (dim.width * 0.467), (int) ((dim.height - 100) * 0.3)));
         panObs.setBorder(BorderFactory.createTitledBorder("Résultats"));
-
         panChoix.add(panObs, BorderLayout.EAST);
 
         this.getContentPane().add(panChoix);

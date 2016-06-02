@@ -15,8 +15,8 @@ import javax.swing.JButton;
  * @author lairt
  */
 public class BoutonSousCas extends JButton {
-
-    public BoutonSousCas(final Fenetre fen_act, String cas) {
+    
+    public BoutonSousCas(final Fenetre fen_act, final String cas) {
         super("Choisir");
 
         this.addActionListener(new ActionListener() {
