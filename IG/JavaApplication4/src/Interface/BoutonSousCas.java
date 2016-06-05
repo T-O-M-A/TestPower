@@ -9,14 +9,17 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import org.rosuda.JRI.Rengine;
 
 /**
  *
  * @author lairt
  */
 public class BoutonSousCas extends JButton {
-    
-    public BoutonSousCas(final Fenetre fen_act, final String cas) {
+
+    public BoutonSousCas(final Fenetre fen_act,
+            final String cas,
+            final Rengine eng) {
         super("Choisir");
 
         this.addActionListener(new ActionListener() {
@@ -28,7 +31,8 @@ public class BoutonSousCas extends JButton {
                         null,
                         fen_act.home,
                         null,
-                        cas);
+                        cas,
+                        eng);
                 new_fen.ret.setEnabled(true);
                 new_fen.next.setEnabled(false);
             }
