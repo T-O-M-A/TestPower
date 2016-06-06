@@ -13,8 +13,6 @@ import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
@@ -289,7 +287,7 @@ public class FenetreCas extends Fenetre {
                     System.exit(0);
                 } else {
                     FenetreCas new_fen = new FenetreCas("Fenetre Principale",
-                            new Dimension(fen.getWidth(), fen.getHeight()), null, null, null, fen.getLocation(), cas);
+                            new Dimension(fen.getWidth(), fen.getHeight()), fen.prec, fen.suiv, fen.home, fen.getLocation(), cas);
                 }
             }
         }

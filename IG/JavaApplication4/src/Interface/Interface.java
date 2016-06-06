@@ -6,6 +6,8 @@
 package Interface;
 
 import java.awt.Dimension;
+import org.rosuda.JRI.RVector;
+import org.rosuda.JRI.Rengine;
 
 /**
  *
@@ -13,6 +15,13 @@ import java.awt.Dimension;
  */
 public class Interface {
 
+    //        eng.eval("library(regression)");
+//        eng.eval("b=regression_blind(2, 20)");
+//        RVector fat = eng.eval("b").asVector();
+//        double[] db = fat.at(0).asDoubleArray();
+//        for (double d : db) {
+//            System.out.println(d);
+//        }
     /**
      * @param args the command line arguments
      */
@@ -20,5 +29,4 @@ public class Interface {
         Fenetre fen = new FenetreOuverture("Menu Principal",
                 new Dimension(1100, 400), null, null, null, null, true);
     }
-
 }

@@ -5,14 +5,13 @@
  */
 package Interface;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,7 +32,7 @@ public class FenetreOuverture extends Fenetre {
         super(title, dim, prec, suiv, home, location);
         fen = this;
         this.getContentPane().add(new JLabel("Projet de Spécialité - Estimation de Puissance à Posteriori"));
-
+     
         JPanel panCas = new JPanel();
         panCas.setBackground(Color.white);
         panCas.setPreferredSize(new Dimension((int) (dim.width * 0.95), (int) ((dim.height - 100) * 0.8)));
@@ -66,7 +65,7 @@ public class FenetreOuverture extends Fenetre {
         panCas.add(panSimple);
         panCas.add(panReg);
         panCas.add(panReel);
-
+        
         this.getContentPane().add(panCas);
 
         this.addWindowListener(new WindowAdapter() {
