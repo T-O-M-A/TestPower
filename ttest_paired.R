@@ -194,8 +194,8 @@ ttest_paired<-function(n,runs, pilote){
   MC_sup = MC(n,runs,meansup,sd1inf,sd2inf,cf)
   MC_moy = MC(n,runs,mean,ecart_type1,ecart_type2,cf)
   
-  IC_Puissance_model = c(MC_inf$p5_hand,MC_sup$p5_hand)
-  IC_Puissance_hand = c(MC_inf$p5_model,MC_sup$p5_model)
+  IC_Puissance_model = c(MC_inf$p5_model,MC_sup$p5_model)
+  IC_Puissance_hand = c(MC_inf$p5_hand,MC_sup$p5_hand)
   IC_Puissance_package = c(MC_inf$p5_package,MC_sup$p5_package)
   
   # On présente les résultats sur la puissance:

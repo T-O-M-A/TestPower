@@ -15,8 +15,7 @@ library(gplots)
 ## Pilote
 
 # Taille de l'échantillon pilote
-npilote = 15
-
+npilote = 20000
 # Nombre de runs pour le Bootstrap du pilote,
 # servant à estimer un intervalle de confiance pour l'écart-type du pilote
 runs_bs_pilote = 1000
@@ -43,8 +42,9 @@ tailles = 10*(2:10)
 # Number of runs for MC
 runs_MC = 1000
 
-
-
+#Intervalle pour la taille du pilote
+tailles_pilote =10:100
+taille= 800
 
 
 
@@ -83,7 +83,7 @@ pilote_ttest_normal<-function(npilote, meand, sd, runs_bs_pilote)
 
 
 MC<-function(n, runs, meand, sd){
-  # Variable (predictor)
+ # Variable (predictor)
   x = c(
     rep(1,n)	# group 
   )
@@ -96,6 +96,7 @@ MC<-function(n, runs, meand, sd){
   
   # On applique 2 Monte Carlo : 
   # un pour meandinf et un pour meandsup
+  #print(meand)
   for (r in 1:runs) {
 
     
@@ -150,22 +151,30 @@ MC<-function(n, runs, meand, sd){
 #---------------------------------------------------
 
 
-ttest_normal<-function(n, runs, pilote){
+ttest_normal<-function(n, runs, pilote,i,vect){
   
   # On récupère les informations du pilote
   # Pour la moyenne
-  mean = pilote$mean # moyenne empirique du pilote
-  conf_mean = pilote$conf_mean # intervalle de confiance pour la moyenne du pilote au seuil alpha = 0.05
-  # Bornes de l'intervalle de confiance de la moyenne
+
+  if(vect){
+    mean = pilote[[1]]$mean   # moyenne empirique du pilote
+  conf_sd = pilote[[1]]$conf_sd # intervalle de confiance pour l'écart-type du pilote au seuil alpha = 0.05
+  conf_mean = pilote[[1]]$conf_mean # intervalle de confiance pour la moyenne du pilote au seuil alpha = 0.05
+  ecart_type = pilote[[1]]$ecart_type  # ecart_type empirique du pilote
+  }
+  else{
+    mean = pilote$mean
+    conf_sd = pilote$conf_sd
+    conf_mean = pilote$conf_mean
+    ecart_type = pilote$ecart_type
+  }
+    # Bornes de l'intervalle de confiance de la moyenne
   meaninf = conf_mean[1]
   meansup = conf_mean[2]
   # Pour l'écart-type
-  ecart_type = pilote$ecart_type  # ecart_type empirique du pilote
-  conf_sd = pilote$conf_sd # intervalle de confiance pour l'écart-type du pilote au seuil alpha = 0.05
   # Bornes de l'intervalle de confiance de l'écart-type
   sdinf = conf_sd[1]
-  sdsup = conf_sd[2]
- 
+  sdsup = conf_sd[2]        
   MC_inf = MC(n,runs,meaninf,sdsup)
   MC_sup = MC(n,runs,meansup,sdinf)
   MC_moy = MC(n,runs,mean,ecart_type)
@@ -179,8 +188,8 @@ ttest_normal<-function(n, runs, pilote){
     # if the histogram and curve match,
     # this means we cannot differentiate the results at chance level)
 
-  IC_Puissance_model = c(MC_inf$p5_hand,MC_sup$p5_hand)
-  IC_Puissance_hand = c(MC_inf$p5_model,MC_sup$p5_model)
+  IC_Puissance_model = c(MC_inf$p5_model,MC_sup$p5_model)
+  IC_Puissance_hand = c(MC_inf$p5_hand,MC_sup$p5_hand)
   IC_Puissance_package = c(MC_inf$p5_package,MC_sup$p5_package)
   
   # On présente les résultats sur la puissance:
@@ -217,6 +226,7 @@ ttest_normal<-function(n, runs, pilote){
 TEST<-function(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles){
   # Création du pilote
   pilote = pilote_ttest_normal(npilote, meand, sd, runs_bs_pilote)
+  #print(pilote)
   # On regarde la puissance en fonction de la taille d'échantillon
   # (!= npilote, qui est la taille du pilote.
   # ici, la taille de l'échantillon correspond à la taille des tirages pour Monte-Carlo)
@@ -225,7 +235,7 @@ TEST<-function(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles){
   IC_low_width = numeric(longueur)
   IC_up_width = numeric(longueur)
   for (i in 1:longueur){
-    results = ttest_normal(tailles[i],runs_MC,pilote)
+    results = ttest_normal(tailles[i],runs_MC,pilote,0,FALSE)
     puissances[i] = results$Puissance_moy_hand
     IC_low_width[i] =  puissances[i] - results$IC_Puissance_hand_inf
     IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
@@ -234,4 +244,27 @@ TEST<-function(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles){
   results # affiche les puissances pour le dernier tirage de Monte Carlo
 }
 
-TEST(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles)
+TEST_taille_pilote<-function(tailles_pilote, meand,sd,runs_bs_pilote,runs_MC, taille){
+  pilotes = array(list(NULL),dim = length(tailles_pilote))
+  longueur = length(tailles_pilote)
+  print(longueur)
+	puissances = rep(0,longueur)
+	IC_low_width = numeric(longueur)
+  IC_up_width = numeric(longueur)
+	for (i in 1:longueur){
+
+	 pilotes[[i]] = pilote_ttest_normal(tailles_pilote[i],meand,sd,runs_bs_pilote)
+
+	}
+  for(i in 1:longueur){
+    results = ttest_normal(taille,runs_MC,pilotes[i],i,TRUE)
+  	puissances[i] = results$Puissance_moy_hand
+	  IC_low_width[i] =  puissances[i] - results$IC_Puissance_hand_inf
+    IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
+  }
+  
+	plotCI(tailles_pilote, puissances, uiw = IC_up_width, liw = IC_low_width, type = "o", barcol = "red")
+  #results # affiche les puissances pour le dernier tirage de Monte Carlo
+}
+
+TEST_taille_pilote(tailles_pilote , meand, sd, runs_bs_pilote, runs_MC, taille)

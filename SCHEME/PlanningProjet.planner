@@ -65,16 +65,16 @@
         <task id="16" name="Test de Student - Deux &#xC9;chantillons Ind&#xE9;pendants" note="" work="28800" start="20160525T000000Z" end="20160525T170000Z" work-start="20160525T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160525T000000Z"/>
         </task>
-        <task id="17" name="Test de Corr&#xE9;lation de Pearson" note="" work="57600" start="20160526T000000Z" end="20160527T170000Z" work-start="20160526T080000Z" percent-complete="62" priority="0" type="normal" scheduling="fixed-work">
+        <task id="17" name="Test de Corr&#xE9;lation de Pearson" note="" work="57600" start="20160526T000000Z" end="20160527T170000Z" work-start="20160526T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160526T000000Z"/>
         </task>
-        <task id="18" name="Test ANOVA" note="" work="57600" start="20160526T000000Z" end="20160527T170000Z" work-start="20160526T080000Z" percent-complete="59" priority="0" type="normal" scheduling="fixed-work">
+        <task id="18" name="Test ANOVA" note="" work="57600" start="20160526T000000Z" end="20160527T170000Z" work-start="20160526T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160526T000000Z"/>
         </task>
       </task>
       <task id="19" name="Estimation du Nombre d'Observations" note="" work="288000" start="20160530T000000Z" end="20160601T170000Z" work-start="20160530T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160530T000000Z"/>
-        <task id="20" name="Test de Student - Un &#xC9;chantillon" note="" work="57600" start="20160530T000000Z" end="20160531T170000Z" work-start="20160530T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+        <task id="20" name="Test de Student - Un &#xC9;chantillon" note="" work="57600" start="20160530T000000Z" end="20160531T170000Z" work-start="20160530T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
           <constraint type="must-start-on" time="20160530T000000Z"/>
         </task>
         <task id="21" name="Test de Student - Deux &#xC9;chantillons Appari&#xE9;s" note="" work="57600" start="20160530T000000Z" end="20160531T170000Z" work-start="20160530T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
@@ -113,7 +113,7 @@
     </task>
     <task id="32" name="Interface Graphique" note="" work="144000" start="20160526T000000Z" end="20160601T170000Z" work-start="20160526T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <constraint type="must-start-on" time="20160526T000000Z"/>
-      <task id="33" name="Interface Graphique" note="" work="144000" start="20160526T000000Z" end="20160601T170000Z" work-start="20160526T080000Z" percent-complete="13" priority="0" type="normal" scheduling="fixed-work">
+      <task id="33" name="Interface Graphique" note="" work="144000" start="20160526T000000Z" end="20160601T170000Z" work-start="20160526T080000Z" percent-complete="72" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160526T000000Z"/>
       </task>
     </task>
@@ -127,7 +127,7 @@
       <task id="38" name="1er TD SCHEME - Cadrage" note="" work="28800" start="20160523T000000Z" end="20160523T170000Z" work-start="20160523T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160523T000000Z"/>
       </task>
-      <task id="39" name="2&#xE8;me TD SCHEME - Entra&#xEE;nement &#xE0; la Revue de Projet" note="" work="28800" start="20160527T000000Z" end="20160527T170000Z" work-start="20160527T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="39" name="2&#xE8;me TD SCHEME - Entra&#xEE;nement &#xE0; la Revue de Projet" note="" work="28800" start="20160527T000000Z" end="20160527T170000Z" work-start="20160527T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
         <constraint type="must-start-on" time="20160527T000000Z"/>
       </task>
       <task id="40" name="3&#xE8;me TD SCHEME - Revue de Projet" note="" work="57600" start="20160602T000000Z" end="20160603T170000Z" work-start="20160602T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">

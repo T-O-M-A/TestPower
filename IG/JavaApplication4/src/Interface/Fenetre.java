@@ -11,13 +11,6 @@ package Interface;
  */
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.util.LinkedList;
-import javax.imageio.ImageIO;
 
 public class Fenetre extends JFrame {
 
@@ -42,7 +35,11 @@ public class Fenetre extends JFrame {
         this.dim = dim;
         this.prec = prec;
         this.suiv = suiv;
+        if (home == null) {
+            this.home = this;
+        } else {
         this.home = home;
+        }
 
         this.setTitle(title);
         this.setSize(dim);
@@ -55,9 +52,9 @@ public class Fenetre extends JFrame {
         Font police = new Font("Arial", Font.BOLD, 14);
 
         pan = new JPanel();
-        pan.setBackground(Color.white);
+        pan.setBackground(Color.black);
         pan.setPreferredSize(new Dimension(dim.width, 60));
-        pan.setBorder(BorderFactory.createTitledBorder("Navigation"));
+        pan.setBorder(BorderFactory.createTitledBorder("<html><font color = white >Navigation</font></html>"));
 
         this.setLayout(new FlowLayout());
 
@@ -75,13 +72,13 @@ public class Fenetre extends JFrame {
             boolRetour = true;
         }
 
-        if (this.prec == null) {
+        if (this.suiv == null) {
             boolSuivant = false;
         } else {
             boolSuivant = true;
         }
 
-        if (this.home == null) {
+        if (this.home == this) {
             boolHome = false;
         } else {
             boolHome = true;
