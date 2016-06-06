@@ -12,13 +12,14 @@ rm(list=ls())
 #-----------------------------------------------------------------------
 
 # Number of runs
-runs = 1000
+runs = 100
 # Number k of populations
-k = 2;
+k = 20;
 n = c(rep(1,k))
 for (i in 1:k){
   n[i] = 20
 }
+
 # Sample sizes
 sample_sizes = c(rep(1,k));
 for(i in 1:k){
@@ -32,6 +33,12 @@ means[1] = 0
 
 # non null to test how often the existing effect is found (power)
 means[2] = means[1] + 0.1
+
+
+for(i in 1:k){
+  means[i] =0.1 - 0.1/(i)
+}
+
 
 # Standard deviation of sample
 s = 0.1
@@ -70,10 +77,15 @@ between_group_variance<-function(sample_sizes,means,y){
 
 
 
+
 within_group_variance<-function(sample_sizes,means,y){
   wgv = 0
-  for(i in 1:N(sample_sizes)){
-    wgv = wgv + (y[i] - mean(y))^2 #mean(means)
+  indice = 0
+  for(i in 1:length(sample_sizes)){
+    for(j in 1:sample_sizes[i]){
+      wgv = wgv + (y[indice + j] - means[i])^2 #mean(means)
+    }
+    indice = indice + sample_sizes[i]
   }
   return(wgv)
 }
@@ -84,6 +96,30 @@ F<-function(means,sample_sizes,y){
   return(f)
 }
 
+pilote_ttest_normal<-function(npilote, means, sd, runs_bs_pilote)
+{
+  # On simule un échantillon "réel" de loi N(meand,s)
+  echantillon = rnorm(npilote,mean = meand,sd = sd)
+  # On détermine les paramètres empiriques du pilote
+  meand2 = mean(echantillon)
+  ecart_type = sd(echantillon)
+  # On détermine l'intervalle de confiance de la moyenne avec la fonction confint de R
+  conf_mean = t.test(echantillon,conf.level = alpha)$conf.int
+  # On détermine l'intervalle de confiance de l'écart-type avec un Bootstrap
+  table_sd = numeric(runs_bs_pilote)
+  for(i in 1:runs_bs_pilote)
+  {
+    # On choisit pour le boostrap des sous-ensembles de taille 80% de la taille de l'échantillon 
+    n_bs = ceiling(0.8*npilote)
+    table_sd[i] = sd((sample(echantillon,n_bs,replace=T)))
+  }
+  table_sd_sorted = sort(table_sd)
+  conf_sd = c(table_sd_sorted[floor(runs_bs_pilote*alpha)],table_sd_sorted[floor(runs_bs_pilote*(1-alpha))])
+  # On retourne l'approximation de l'étude pilote
+  return (list(ecart_type=ecart_type, mean = meand2, conf_mean=conf_mean, conf_sd=conf_sd))
+}
+
+
 test_anova<-function(runs, means, sample_sizes, s, alpha){
   
   # Independent variable (predictor)
@@ -93,7 +129,8 @@ test_anova<-function(runs, means, sample_sizes, s, alpha){
   x = factor(x)
   
   # Perform runs (with stochastic sampling)
-  fval_hand = numeric(runs) # to store resulting t statistics (computed by hand)
+  fval_hand = numeric(runs)
+  fval= numeric(runs) # to store resulting t statistics (computed by hand)
   for (r in 1:runs) {
     # Generate random independent samples with normal distributions
     # for the dependent variable (predicted)
@@ -112,18 +149,18 @@ test_anova<-function(runs, means, sample_sizes, s, alpha){
     means_empirique = c(rep(1,k))
     indice = 0
     for(i in 1:k){
-      intervalle = y[(indice+1) : (indice + sample_sizes[i])]
+      intervalle = y1[(indice+1) : (indice + sample_sizes[i])]
       means_empirique[i] = mean(intervalle)
       indice = indice + sample_sizes[i]
     }
     fval_hand[r] = F(means_empirique,sample_sizes,y1)
-  # Display the resulting statistics
+	 #  model = fisher.test(y)
+    #fval[r] = model$statistic
 }
-
 ncp = (N(sample_sizes))*(sigma_m(means,sample_sizes)/s)^2
-thr = qf(p =  1 -alpha,df1 = k-1,df2 = N(sample_sizes) - k,ncp = ncp,lower.tail = FALSE)
+thr = qf(p =  1 -alpha,df1 = k-1,df2 = N(sample_sizes) - k)
 #thr_upp = qt(alpha/2,n+n-2,lower.tail=F)
-nb = sum( fval_hand > thr)
+nb = sum(fval_hand > thr)
 p5_hand = nb/runs
 
 #p5_package = power.anova.test(groups = k,n = n1,between.var = between_group_variance(sample_sizes,means_empirique,y),within.var = within_group_variance(sample_sizes,means_empirique,y1) ,sig.level = alpha)$power
@@ -135,7 +172,9 @@ results = data.frame(
   sd=s,
   runs=runs,
   p5_hand=p5_hand,
- p5_package=p5_package 
+  p5_package=p5_package, 
+  fval_mean = mean(fval_hand),
+  thr = thr
 )
 results
                 
