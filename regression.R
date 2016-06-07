@@ -72,13 +72,17 @@ regression_blind<-function(n_param, n_obs){
       Y[i] <- Y[i] + beta[j]*x[((j-1)*n_obs)+i]
     }
   }
-  return(list(Y=Y,x=x,alpha=alpha,beta=beta,mean=mu,sd=s,e=e))
+  # return(list(Y=Y,x=x,alpha=alpha,beta=beta,mean=mu,sd=s,e=e))
+  return(list(Y = Y, x = x, alpha = alpha, beta = beta, mean = mu, sd = s, e = e))
+  
 }
 
-#Code fourni par Jean-Charles Quinton
+## Code fourni par Jean-Charles Quinton
+
+
 univariate_regression<-function(n, b_0, b_1, noise_s){
   # IVs data generation
-  x = runif(n)
+  x = runif(n) # x = vecteur n lignes
   # Model parameters
   b0 = b_0
   b1 = b_1
@@ -93,13 +97,13 @@ univariate_regression<-function(n, b_0, b_1, noise_s){
 
 multiple_regression<-function(n, b_0, b_1, b_2, noise_s){
   # IVs data generation
-  x = cbind(rep(1,n),runif(n),runif(n))
+  x = cbind(rep(1,n),runif(n),runif(n))# x = matrice n lignes 3 colonnes
   # Model parameters
-  b = c(b_0, b_1, b_2)
+  b = c(b_0, b_1, b_2)# b = vecteur 3 lignes
   noise_sd = noise_s
   # DV generation (matrix based)
   y = x%*%b + rnorm(n,0,noise_sd)
-  
+ 
   # Test if parameters are correctly estimated
   # (remove first column in x, which corresponds to the constant)
   mod = lm(y~x[,-1])
