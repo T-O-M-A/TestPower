@@ -271,5 +271,5 @@ TEST_taille_pilote<-function(tailles_pilote_incongruent,tailles_pilote_congruent
 }
 
 
-TEST(npilote_congruent, npilote_incongruent , meand, sd, runs_bs_pilote, runs_MC, tailles)
+TEST_taille_pilote(tailles_pilote_congruent, tail , meand, sd, runs_bs_pilote, runs_MC, tailles)
 
