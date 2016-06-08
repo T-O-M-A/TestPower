@@ -17,6 +17,8 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.rosuda.JRI.Rengine;
+import org.rosuda.REngine.REngine;
 
 /**
  *
@@ -32,7 +34,8 @@ public class FenetreCas extends Fenetre {
             Fenetre suiv,
             Fenetre home,
             Point location,
-            final String cas) {
+            final String cas,
+            final Rengine eng) {
         super(title, dim, prec, suiv, home, location);
         fen = this;
         this.cas = cas;
@@ -93,7 +96,7 @@ public class FenetreCas extends Fenetre {
                 panUn.setBackground(Color.white);
                 panUn.setPreferredSize(new Dimension((int) (dim.width * 0.458), (int) ((dim.height - 100) * 0.162)));
                 panUn.setBorder(BorderFactory.createTitledBorder("Un Échantillon"));
-                BoutonSousCas boutonUn = new BoutonSousCas(this, "Un Échantillon");
+                BoutonSousCas boutonUn = new BoutonSousCas(this, "Un Échantillon", eng);
                 boutonUn.setPreferredSize(new Dimension((int) (dim.width * 0.44), (int) ((dim.height - 100) * 0.11)));
                 panUn.add(boutonUn);
                 panStudent.add(panUn);
@@ -102,7 +105,7 @@ public class FenetreCas extends Fenetre {
                 panApp.setBackground(Color.white);
                 panApp.setPreferredSize(new Dimension((int) (dim.width * 0.458), (int) ((dim.height - 100) * 0.162)));
                 panApp.setBorder(BorderFactory.createTitledBorder("Deux Échantillons Appariés"));
-                BoutonSousCas boutonApp = new BoutonSousCas(this, "Deux Échantillons Appariés");
+                BoutonSousCas boutonApp = new BoutonSousCas(this, "Deux Échantillons Appariés", eng);
                 boutonApp.setPreferredSize(new Dimension((int) (dim.width * 0.44), (int) ((dim.height - 100) * 0.11)));
                 panApp.add(boutonApp);
                 panStudent.add(panApp);
@@ -111,7 +114,7 @@ public class FenetreCas extends Fenetre {
                 panInd.setBackground(Color.white);
                 panInd.setPreferredSize(new Dimension((int) (dim.width * 0.458), (int) ((dim.height - 100) * 0.162)));
                 panInd.setBorder(BorderFactory.createTitledBorder("Deux Échantillons Indépendants"));
-                BoutonSousCas boutonInd = new BoutonSousCas(this, "Deux Échantillons Indépendants");
+                BoutonSousCas boutonInd = new BoutonSousCas(this, "Deux Échantillons Indépendants", eng);
                 boutonInd.setPreferredSize(new Dimension((int) (dim.width * 0.44), (int) ((dim.height - 100) * 0.11)));
                 panInd.add(boutonInd);
                 panStudent.add(panInd);
@@ -131,7 +134,7 @@ public class FenetreCas extends Fenetre {
                 JPanel panIntCorr = new JPanel();
                 panIntCorr.setBackground(Color.white);
                 panIntCorr.setPreferredSize(new Dimension((int) (dim.width * 0.45), (int) ((dim.height - 100) * 0.215)));
-                BoutonSousCas boutonCorr = new BoutonSousCas(this, "Corrélation de Pearson");
+                BoutonSousCas boutonCorr = new BoutonSousCas(this, "Corrélation de Pearson", eng);
                 boutonCorr.setPreferredSize(new Dimension((int) (dim.width * 0.44), (int) ((dim.height - 100) * 0.19)));
                 panIntCorr.add(boutonCorr);
                 panCorr.add(panIntCorr);
@@ -146,7 +149,7 @@ public class FenetreCas extends Fenetre {
                 JPanel panIntAnova = new JPanel();
                 panIntAnova.setBackground(Color.white);
                 panIntAnova.setPreferredSize(new Dimension((int) (dim.width * 0.45), (int) ((dim.height - 100) * 0.215)));
-                BoutonSousCas boutonAnova = new BoutonSousCas(this, "ANOVA");
+                BoutonSousCas boutonAnova = new BoutonSousCas(this, "ANOVA", eng);
                 boutonAnova.setPreferredSize(new Dimension((int) (dim.width * 0.44), (int) ((dim.height - 100) * 0.19)));
                 panIntAnova.add(boutonAnova);
                 panAnova.add(panIntAnova);
@@ -177,7 +180,7 @@ public class FenetreCas extends Fenetre {
                 JPanel panIntSimple = new JPanel();
                 panIntSimple.setBackground(Color.lightGray);
                 panIntSimple.setPreferredSize(new Dimension((int) (dim.width * 0.243), (int) ((dim.height - 100) * 0.215)));
-                BoutonSousCas boutonSimple = new BoutonSousCas(this, "Régression Simple");
+                BoutonSousCas boutonSimple = new BoutonSousCas(this, "Régression Simple", eng);
                 boutonSimple.setPreferredSize(new Dimension((int) (dim.width * 0.243), (int) ((dim.height - 100) * 0.215)));
                 panIntSimple.add(boutonSimple);
                 panSimple.add(panIntSimple, BorderLayout.EAST);
@@ -205,7 +208,7 @@ public class FenetreCas extends Fenetre {
                 JPanel panIntMixte = new JPanel();
                 panIntMixte.setBackground(Color.lightGray);
                 panIntMixte.setPreferredSize(new Dimension((int) (dim.width * 0.243), (int) ((dim.height - 100) * 0.215)));
-                BoutonSousCas boutonMixte = new BoutonSousCas(this, "Régression avec Effets Mixtes");
+                BoutonSousCas boutonMixte = new BoutonSousCas(this, "Régression avec Effets Mixtes", eng);
                 boutonMixte.setPreferredSize(new Dimension((int) (dim.width * 0.243), (int) ((dim.height - 100) * 0.215)));
                 panIntMixte.add(boutonMixte);
                 panMixte.add(panIntMixte, BorderLayout.EAST);
@@ -234,7 +237,7 @@ public class FenetreCas extends Fenetre {
                 JPanel panIntMultiple = new JPanel();
                 panIntMultiple.setBackground(Color.lightGray);
                 panIntMultiple.setPreferredSize(new Dimension((int) (dim.width * 0.243), (int) ((dim.height - 100) * 0.215)));
-                BoutonSousCas boutonMultiple = new BoutonSousCas(this, "Régression Multiple");
+                BoutonSousCas boutonMultiple = new BoutonSousCas(this, "Régression Multiple", eng);
                 boutonMultiple.setPreferredSize(new Dimension((int) (dim.width * 0.243), (int) ((dim.height - 100) * 0.215)));
                 panIntMultiple.add(boutonMultiple);
                 panMultiple.add(panIntMultiple, BorderLayout.EAST);
@@ -262,7 +265,7 @@ public class FenetreCas extends Fenetre {
                 JPanel panIntInter = new JPanel();
                 panIntInter.setBackground(Color.lightGray);
                 panIntInter.setPreferredSize(new Dimension((int) (dim.width * 0.243), (int) ((dim.height - 100) * 0.215)));
-                BoutonSousCas boutonInter = new BoutonSousCas(this, "Régression Multiple avec Intéraction");
+                BoutonSousCas boutonInter = new BoutonSousCas(this, "Régression Multiple avec Intéraction", eng);
                 boutonInter.setPreferredSize(new Dimension((int) (dim.width * 0.243), (int) ((dim.height - 100) * 0.215)));
                 panIntInter.add(boutonInter);
                 panInter.add(panIntInter, BorderLayout.EAST);
@@ -284,10 +287,11 @@ public class FenetreCas extends Fenetre {
                         "Voulez-vous fermer l'application ?", "Fermeture ?",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                    eng.end();
                     System.exit(0);
                 } else {
                     FenetreCas new_fen = new FenetreCas("Fenetre Principale",
-                            new Dimension(fen.getWidth(), fen.getHeight()), fen.prec, fen.suiv, fen.home, fen.getLocation(), cas);
+                            new Dimension(fen.getWidth(), fen.getHeight()), fen.prec, fen.suiv, fen.home, fen.getLocation(), cas, eng);
                 }
             }
         }

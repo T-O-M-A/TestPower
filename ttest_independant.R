@@ -283,6 +283,32 @@ Puissance_ind<-function(npilote_congruent = 20, npilote_incongruent = 20, meand 
   results # affiche les puissances pour le dernier tirage de Monte Carlo
   return(calcul_n(puissance,puissances,tailles))
 }
+
 n_calc = Puissance_ind(dest_puissance =  '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/puissance.jpg',
         dest_pilote = '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/pilote.jpg',puissance = 0.8)
 n_calc
+
+
+TEST_taille_pilote<-function(tailles_pilote_incongruent,tailles_pilote_congruent, meand,sd,runs_bs_pilote,runs_MC, taille){
+  pilotes = array(list(NULL),dim = length(tailles_pilote_incongruent))
+  longueur = length(tailles_pilote_incongruent)
+  puissances = rep(0,longueur)
+  IC_low_width = numeric(longueur)
+  IC_up_width = numeric(longueur)
+  for (i in 1:longueur){
+    pilotes[[i]] = pilote_ttest_independants(tailles_pilote_congruent[i],tailles_pilote_incongruent[i],meand,sd,runs_bs_pilote)
+    
+  }
+  for(i in 1:longueur){
+    results = ttest_independants(taille,taille,runs_MC,pilotes[i],TRUE)
+    puissances[i] = results$Puissance_moy_hand
+    IC_low_width[i] =  puissances[i] - results$IC_Puissance_hand_inf
+    IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
+  }
+  
+  plotCI(tailles_pilote_congruent, puissances, uiw = IC_up_width, liw = IC_low_width, type = "o", barcol = "red")
+  results # affiche les puissances pour le dernier tirage de Monte Carlo
+}
+
+
+
