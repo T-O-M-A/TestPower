@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import org.rosuda.JRI.Rengine;
+import org.rosuda.REngine.REngine;
 
 /**
  *
@@ -16,7 +18,8 @@ import javax.swing.JButton;
  */
 public class BoutonTest extends JButton {
 
-    public BoutonTest(final Fenetre fen_act) {
+    public BoutonTest(final Fenetre fen_act,
+            final Rengine eng) {
         super("Vérification du Test");
 
         this.addActionListener(new ActionListener() {
@@ -28,7 +31,8 @@ public class BoutonTest extends JButton {
                         null,
                         fen_act.home,
                         null,
-                        "Réel");
+                        "Réel",
+                        eng);
                 new_fen.ret.setEnabled(true);
                 new_fen.next.setEnabled(false);
             }
