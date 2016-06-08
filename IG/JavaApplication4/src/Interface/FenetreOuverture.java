@@ -15,6 +15,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.rosuda.JRI.Rengine;
+import org.rosuda.REngine.REngine;
 
 /**
  *
@@ -28,7 +30,8 @@ public class FenetreOuverture extends Fenetre {
             Fenetre suiv,
             Fenetre home,
             Point location,
-            Boolean bool) {
+            Boolean bool,
+            final Rengine eng) {
         super(title, dim, prec, suiv, home, location);
         fen = this;
         this.getContentPane().add(new JLabel("Projet de Spécialité - Estimation de Puissance à Posteriori"));
@@ -42,7 +45,7 @@ public class FenetreOuverture extends Fenetre {
         panSimple.setBackground(Color.white);
         panSimple.setPreferredSize(new Dimension((int) (dim.width * 0.305), (int) ((dim.height - 100) * 0.675)));
         JLabel labelSimple = new JLabel("Cas Simples");
-        BoutonCasSimple boutonCasSimple = new BoutonCasSimple(this, true);
+        BoutonCasSimple boutonCasSimple = new BoutonCasSimple(this, true, eng);
         panSimple.add(labelSimple);
         panSimple.add(boutonCasSimple);
 
@@ -50,7 +53,7 @@ public class FenetreOuverture extends Fenetre {
         panReg.setBackground(Color.white);
         panReg.setPreferredSize(new Dimension((int) (dim.width * 0.305), (int) ((dim.height - 100) * 0.675)));
         JLabel labelReg = new JLabel("Cas Regressions");
-        BoutonCasRegression boutonCasRegression = new BoutonCasRegression(this, true);
+        BoutonCasRegression boutonCasRegression = new BoutonCasRegression(this, true, eng);
         panReg.add(labelReg);
         panReg.add(boutonCasRegression);
 
@@ -58,7 +61,7 @@ public class FenetreOuverture extends Fenetre {
         panReel.setBackground(Color.white);
         panReel.setPreferredSize(new Dimension((int) (dim.width * 0.305), (int) ((dim.height - 100) * 0.675)));
         JLabel labelReel = new JLabel("Cas Réel");
-        BoutonCasReel boutonCasReel = new BoutonCasReel(this, true);
+        BoutonCasReel boutonCasReel = new BoutonCasReel(this, true, eng);
         panReel.add(labelReel);
         panReel.add(boutonCasReel);
 
@@ -74,10 +77,11 @@ public class FenetreOuverture extends Fenetre {
                         "Voulez-vous fermer l'application ?", "Fermeture ?",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                    eng.end();
                     System.exit(0);
                 } else {
                     FenetreOuverture new_fen = new FenetreOuverture("Fenetre Principale",
-                            new Dimension(fen.getWidth(), fen.getHeight()), fen.prec, fen.suiv, fen.home, fen.getLocation(), false);
+                            new Dimension(fen.getWidth(), fen.getHeight()), fen.prec, fen.suiv, fen.home, fen.getLocation(), false, eng);
 
                 }
             }

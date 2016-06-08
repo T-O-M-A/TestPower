@@ -13,6 +13,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import org.rosuda.JRI.Rengine;
+import org.rosuda.REngine.REngine;
 
 /**
  *
@@ -20,7 +22,9 @@ import javax.swing.JButton;
  */
 public class BoutonCasRegression extends JButton {
 
-    public BoutonCasRegression(final Fenetre fen_act, Boolean enabled) {
+    public BoutonCasRegression(final Fenetre fen_act,
+            Boolean enabled,
+            final Rengine eng) {
         super();
 
         try {
@@ -41,7 +45,8 @@ public class BoutonCasRegression extends JButton {
                         null,
                         fen_act.home,
                         null,
-                        "Régression");
+                        "Régression",
+                        eng);
                 new_fen.ret.setEnabled(true);
                 new_fen.next.setEnabled(false);
             }
