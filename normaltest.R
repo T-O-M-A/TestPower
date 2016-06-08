@@ -18,7 +18,7 @@ library(gplots)
 npilote = 20000
 # Nombre de runs pour le Bootstrap du pilote,
 # servant à estimer un intervalle de confiance pour l'écart-type du pilote
-runs_bs_pilote = 1000
+runs_bs_pilote = 100
 # Difference between the means:
 # no difference to test the alpha level (type I errors)
 meand = 0
@@ -40,7 +40,7 @@ alpha = 0.05
 # Intervalle des tirages pour Monte-Carlo.
 tailles = 10*(2:10)
 # Number of runs for MC
-runs_MC = 1000
+runs_MC = 100
 
 #Intervalle pour la taille du pilote
 tailles_pilote =10:100
@@ -151,7 +151,7 @@ MC<-function(n, runs, meand, sd){
 #---------------------------------------------------
 
 
-ttest_normal<-function(n, runs, pilote,i,vect){
+ttest_normal<-function(n, runs, pilote,vect){
   
   # On récupère les informations du pilote
   # Pour la moyenne
@@ -178,7 +178,6 @@ ttest_normal<-function(n, runs, pilote,i,vect){
   MC_inf = MC(n,runs,meaninf,sdsup)
   MC_sup = MC(n,runs,meansup,sdinf)
   MC_moy = MC(n,runs,mean,ecart_type)
-    
     # Histograms for the observed t statistic on independent samples
     # hist(tval,freq=FALSE,breaks=100)
     # Curve for the theoretical distribution for independent samples
@@ -235,7 +234,7 @@ TEST<-function(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles){
   IC_low_width = numeric(longueur)
   IC_up_width = numeric(longueur)
   for (i in 1:longueur){
-    results = ttest_normal(tailles[i],runs_MC,pilote,0,FALSE)
+    results = ttest_normal(tailles[i],runs_MC,pilote,FALSE)
     puissances[i] = results$Puissance_moy_hand
     IC_low_width[i] =  puissances[i] - results$IC_Puissance_hand_inf
     IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
@@ -247,7 +246,6 @@ TEST<-function(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles){
 TEST_taille_pilote<-function(tailles_pilote, meand,sd,runs_bs_pilote,runs_MC, taille){
   pilotes = array(list(NULL),dim = length(tailles_pilote))
   longueur = length(tailles_pilote)
-  print(longueur)
 	puissances = rep(0,longueur)
 	IC_low_width = numeric(longueur)
   IC_up_width = numeric(longueur)
@@ -257,8 +255,9 @@ TEST_taille_pilote<-function(tailles_pilote, meand,sd,runs_bs_pilote,runs_MC, ta
 
 	}
   for(i in 1:longueur){
-    results = ttest_normal(taille,runs_MC,pilotes[i],i,TRUE)
+    results = ttest_normal(taille,runs_MC,pilotes[i],TRUE)
   	puissances[i] = results$Puissance_moy_hand
+  	print(puissances[i])
 	  IC_low_width[i] =  puissances[i] - results$IC_Puissance_hand_inf
     IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
   }
