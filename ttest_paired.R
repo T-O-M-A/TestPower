@@ -45,8 +45,9 @@ runs_MC = 1000
 
 
 
-pilote_ttest_paired<-function(npilote, meand, s1, s2, cf, runs_bs_pilote)
+pilote_ttest_paired<-function(npilote, meand, s1, s2, cf, runs_bs_pilote, dest_pilote)
 {
+  alpha = 0.05
   # On simule 2 échantillons "réels"
   # tels que: leur différence de moyenne est meand,
   # les standard error des echantillons sont s1 et s2,
@@ -84,7 +85,42 @@ pilote_ttest_paired<-function(npilote, meand, s1, s2, cf, runs_bs_pilote)
   table_sd2_sorted = sort(table_sd2)
   conf_sd1 = c(table_sd1_sorted[floor(runs_bs_pilote*alpha)],table_sd1_sorted[floor(runs_bs_pilote*(1-alpha))])
   conf_sd2 = c(table_sd2_sorted[floor(runs_bs_pilote*alpha)],table_sd2_sorted[floor(runs_bs_pilote*(1-alpha))])
-
+  # On trace le pilote
+  jpeg(dest_pilote)
+  densCongruent <- density(congruent)
+  densIncongruent <- density(incongruent)
+  histCongruent <-hist(congruent, breaks=10, plot = FALSE)
+  histIncongruent <- hist(incongruent, breaks=10, plot = FALSE)
+  xlim <- range(histIncongruent$breaks,histCongruent$breaks)
+  ylim <- range(0,histIncongruent$density,histCongruent$density)
+  #ylim <- c(0,max(histCongruent$density,max(histIncongruent$density)))
+  plot(histCongruent,xlim = xlim, ylim = ylim,
+       col = rgb(1,0,0,0.4),xlab = 'congruent',
+       freq = FALSE, ## relative, not absolute frequency
+       main = 'Distribution')
+  opar <- par(new = FALSE)
+  plot(histIncongruent,xlim = xlim, ylim = ylim,
+       xaxt = 'n', yaxt = 'n', ## don't add axes
+       col = rgb(0,0,1,0.4), add = TRUE,
+       freq = FALSE) ## relative, not absolute frequency
+  ## add a legend in the corner
+  legend('topleft',c('Congruent','Incongruent'),
+         fill = rgb(1:0,0,0:1,0.4), bty = 'n',
+         border = NA)
+  par(opar)
+  ## plot first density
+  xfit1<-seq(min(congruent),max(congruent),length=40)
+  yfit1<-dnorm(xfit1,mean=mean1,sd=ecart_type_congruent)
+  yfit1 <- yfit1*diff(histCongruent$mids[1:2])*length(congruent)
+  lines(xfit1, yfit1, col=rgb(1,0,0,0.4), lwd=2) 
+  ## plot second density
+  xfit2<-seq(min(incongruent),max(incongruent),length=40)
+  yfit2<-dnorm(xfit2,mean=mean2,sd=ecart_type_incongruent)
+  yfit2 <- yfit2*diff(histIncongruent$mids[1:2])*length(incongruent)
+  lines(xfit2, yfit2, col=rgb(0,0,1,0.4), lwd=2) 
+  
+  
+  dev.off()
   # On retourne l'approximation de l'étude pilote
   return (list(ecart_type_congruent=ecart_type_congruent, ecart_type_incongruent=ecart_type_incongruent, mean=meand2, conf_mean=conf_mean, conf_sd1=conf_sd1,conf_sd2 = conf_sd2))
 }
@@ -96,7 +132,7 @@ pilote_ttest_paired<-function(npilote, meand, s1, s2, cf, runs_bs_pilote)
 #---------------------------------------------------
 
 MC<-function(n, runs, meand, s1, s2, cf){
-  
+  alpha = 0.05
   # Independent variable (predictor)
   x = c(
     rep(1,n)	# group 
@@ -171,7 +207,7 @@ MC<-function(n, runs, meand, s1, s2, cf){
 # t-test simulations (Monte-Carlo)
 #---------------------------------------------------
 
-ttest_paired<-function(n,runs, pilote){
+ttest_paired<-function(n,runs, pilote,cf){
   
   # On récupère les informations du pilote
   # Pour la moyenne
@@ -227,26 +263,30 @@ ttest_paired<-function(n,runs, pilote){
 # (Calcul basé sur l'algorithme de Monte Carlo )
 #---------------------------------------------------
 
-TEST<-function(npilote, meand, s1, s2, cf, runs_bs_pilote, runs_MC, tailles){
+TEST_ap<-function(npilote = 20, meand = 0.1, s1 = 0.3, s2 = 0.3, cf = 0.6, runs_bs_pilote = 1000, runs_MC = 1000, taille_max = 100, dest_puissance, dest_pilote, puissance = NULL){
+  # Environment
+  library(gplots)
   # Création du pilote
-  pilote = pilote_ttest_paired(npilote, meand, s1, s2, cf, runs_bs_pilote)
+  pilote = pilote_ttest_paired(npilote, meand, s1, s2, cf, runs_bs_pilote, dest_pilote)
   # On regarde la puissance en fonction de la taille d'échantillon
   # (!= npilote, qui est la taille du pilote.
   # ici, la taille de l'échantillon correspond à la taille des tirages pour Monte-Carlo)
+  tailles = seq(from = 20, to = taille_max, length.out = 15)
   longueur = length(tailles)
-  puissances = rep(0,longueur)
+  puissances =numeric(longueur)
   IC_low_width = numeric(longueur)
   IC_up_width = numeric(longueur)
   for (i in 1:longueur){
-    results = ttest_paired(tailles[i],runs_MC,pilote)
+    results = ttest_paired(tailles[i],runs_MC,pilote,cf)
     puissances[i] = results$Puissance_moy_hand
     IC_low_width[i] =  puissances[i] - results$IC_Puissance_hand_inf
     IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
   }
+  jpeg(dest_puissance)
   plotCI(tailles, puissances, uiw = IC_up_width, liw = IC_low_width, type = "o", barcol = "red")
+  dev.off()
   results # affiche les puissances pour le dernier tirage de Monte Carlo
 }
-
-TEST(npilote, meand, s1, s2, cf, runs_bs_pilote, runs_MC, tailles)
-
-
+n = TEST_ap(dest_puissance =  '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/puissance.jpg',
+         dest_pilote = '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/pilote.jpg',puissance = 0.8)
+n

@@ -1,8 +1,8 @@
 # Test de moyenne bilatéral - T test simulation (Monte Carlo)
 # Objectif: Estimation de puissance 
-# dans le cas: 1 échantillon (comparasion à une moyenne nulle)
+# dans le cas: 1 échantillon (comparaison à une moyenne nulle)
 
-# Clear environment
+# Environment
 rm(list=ls())
 library(gplots)
 
@@ -49,11 +49,49 @@ taille= 800
 
 
 #---------------------------------------------------
+#                     calcul du n 
+#---------------------------------------------------
+
+
+calcul_n<-function(puissance,puissances,tailles){
+  if (is.null(puissance)){
+    return (NULL)
+  } else {
+    i = 0
+    p_cour = 0
+    while((i < 16) && (p_cour < puissance)){
+    i = i+1
+    p_cour = puissances[i]
+  }
+  if(i == 16){
+    return (0)
+  } else {
+    n2 = tailles[i]
+    p2 = puissances[i]
+    if (i==1){
+      n1 = 0  
+      p1 = 0
+    } else {
+      n1 = tailles[i-1]
+      p1 = puissances[i-1]
+    }
+    pente = (p2-p1)/(n2-n1)
+    if (pente == 0){
+      n_calc = (n2-n1)/2
+    } else {
+      n_calc = (puissance-p1)/pente + n1
+    }
+    n_calc = ceiling(n_calc)
+    return (n_calc)
+    }
+  }
+}
+#---------------------------------------------------
 #                     pilote 
 #---------------------------------------------------
 
 
-pilote_ttest_normal<-function(npilote, meand, sd, runs_bs_pilote)
+pilote_ttest_normal<-function(npilote, meand, sd, runs_bs_pilote,dest_pilote)
 {
   # On simule un échantillon "réel" de loi N(meand,s)
   echantillon = rnorm(npilote,mean = meand,sd = sd)
@@ -72,6 +110,23 @@ pilote_ttest_normal<-function(npilote, meand, sd, runs_bs_pilote)
   }
   table_sd_sorted = sort(table_sd)
   conf_sd = c(table_sd_sorted[floor(runs_bs_pilote*alpha)],table_sd_sorted[floor(runs_bs_pilote*(1-alpha))])
+  # On trace le pilote
+  jpeg(dest_pilote)
+  redleger = rgb(1,0,0)
+  redfort = rgb(0.3,0,0)
+  h<-hist(echantillon, breaks=10, col=redleger, main="Histogram with Normal Curve")
+  
+  xfit<-seq(min(echantillon),max(echantillon),length=40)
+  yfit1<-dnorm(xfit,mean=meand2,sd=ecart_type)
+  yfit1 <- yfit1*diff(h$mids[1:2])*length(echantillon)
+  lines(xfit, yfit1, col=redfort, lwd=2) 
+  yfit2 <- dnorm(xfit,sd=ecart_type)
+  yfit2 <- yfit2*diff(h$mids[1:2])*length(echantillon)
+  lines(xfit, yfit2, col="blue", lwd=2) 
+  legend('topleft',c('Référence nulle','Echantillon'),
+         fill = c("blue", redfort), bty = 'n',
+         border = NA)
+  dev.off()
   # On retourne l'approximation de l'étude pilote
   return (list(ecart_type=ecart_type, mean = meand2, conf_mean=conf_mean, conf_sd=conf_sd))
 }
@@ -178,14 +233,6 @@ ttest_normal<-function(n, runs, pilote,vect){
   MC_inf = MC(n,runs,meaninf,sdsup)
   MC_sup = MC(n,runs,meansup,sdinf)
   MC_moy = MC(n,runs,mean,ecart_type)
-    # Histograms for the observed t statistic on independent samples
-    # hist(tval,freq=FALSE,breaks=100)
-    # Curve for the theoretical distribution for independent samples
-    # (if mean = 0)
-    # s_range = seq(min(tval),max(tval),length.out=100)
-    # lines(s_range,dt(s_range,n+n-2))
-    # if the histogram and curve match,
-    # this means we cannot differentiate the results at chance level)
 
   IC_Puissance_model = c(MC_inf$p5_model,MC_sup$p5_model)
   IC_Puissance_hand = c(MC_inf$p5_hand,MC_sup$p5_hand)
@@ -222,15 +269,16 @@ ttest_normal<-function(n, runs, pilote,vect){
 # (Calcul basé sur l'algorithme de Monte Carlo )
 #---------------------------------------------------
 
-TEST<-function(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles){
+Puissance_un<-function(npilote = 20, meand = 0.1, sd = 0.3, runs_bs_pilote = 1000, runs_MC = 1000, taille_max = 100, dest_puissance, dest_pilote, puissance = NULL){
   # Création du pilote
-  pilote = pilote_ttest_normal(npilote, meand, sd, runs_bs_pilote)
+  pilote = pilote_ttest_normal(npilote, meand, sd, runs_bs_pilote,dest_pilote)
   #print(pilote)
   # On regarde la puissance en fonction de la taille d'échantillon
   # (!= npilote, qui est la taille du pilote.
   # ici, la taille de l'échantillon correspond à la taille des tirages pour Monte-Carlo)
+  tailles = seq(from = 20, to = taille_max, length.out = 15)
   longueur = length(tailles)
-  puissances = rep(0,longueur)
+  puissances = numeric(longueur)
   IC_low_width = numeric(longueur)
   IC_up_width = numeric(longueur)
   for (i in 1:longueur){
@@ -239,11 +287,15 @@ TEST<-function(npilote, meand, sd, runs_bs_pilote, runs_MC, tailles){
     IC_low_width[i] =  puissances[i] - results$IC_Puissance_hand_inf
     IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
   }
+  jpeg(dest_puissance)
   plotCI(tailles, puissances, uiw = IC_up_width, liw = IC_low_width, type = "o", barcol = "red")
+  dev.off()
   results # affiche les puissances pour le dernier tirage de Monte Carlo
+  return(calcul_n(puissance,puissances,tailles))
 }
 
-TEST_taille_pilote<-function(tailles_pilote, meand,sd,runs_bs_pilote,runs_MC, taille){
+
+TEST_taille_pilote<-function(tailles_pilote, meand,sd,runs_bs_pilote,runs_MC){
   pilotes = array(list(NULL),dim = length(tailles_pilote))
   longueur = length(tailles_pilote)
 	puissances = rep(0,longueur)
@@ -261,9 +313,10 @@ TEST_taille_pilote<-function(tailles_pilote, meand,sd,runs_bs_pilote,runs_MC, ta
 	  IC_low_width[i] =  puissances[i] - results$IC_Puissance_hand_inf
     IC_up_width[i] = results$IC_Puissance_hand_sup - puissances[i]
   }
-  
-	plotCI(tailles_pilote, puissances, uiw = IC_up_width, liw = IC_low_width, type = "o", barcol = "red")
-  #results # affiche les puissances pour le dernier tirage de Monte Carlo
-}
 
-TEST_taille_pilote(tailles_pilote , meand, sd, runs_bs_pilote, runs_MC, taille)
+	 #results # affiche les puissances pour le dernier tirage de Monte Carlo
+}
+n_calc = Puissance_un(dest_puissance =  '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/puissance.jpg',
+     dest_pilote = '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/pilote.jpg', puissance = 0.9)
+
+n_calc
