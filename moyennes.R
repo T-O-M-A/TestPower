@@ -1,4 +1,3 @@
-# UN ECHANTILLON
 
 
 
@@ -40,6 +39,9 @@ calcul_n<-function(puissance,puissances,tailles){
     }
   }
 }
+
+
+# UN ECHANTILLON
 
 
 #---------------------------------------------------

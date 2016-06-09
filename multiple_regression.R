@@ -3,8 +3,8 @@
 # dans le cas: régression multiple
 
 
-# Clear environment
-rm(list=ls())
+# Environment
+
 library(gplots)
 library(regression)
 library(boot)
@@ -59,7 +59,7 @@ stat_noise_s<-function(data, indice){
 
 # Fonction qui génère un échantillon pilote et renvoie l'échantillon et
 # l'intervalle de confiance des 2 paramètres estimé b_0 et b_1
-pilote_multiple_reg<-function(npilote, runs_bs_pilote, b_0, b_1, b_2, noise_s)
+pilote_multiple_reg<-function(npilote, runs_bs_pilote, b_0, b_1, b_2, noise_s, dest_pilote)
 {
   # On simule 1 échantillon "réel"
   # Si tous les paramètres ne sont pas rentrés,
@@ -104,14 +104,14 @@ pilote_multiple_reg<-function(npilote, runs_bs_pilote, b_0, b_1, b_2, noise_s)
   conf_b_1 = c(c_1[4],c_1[5])
   conf_b_2 = c(c_2[4],c_2[5])
   conf_noise_s = c(c_s[4],c_s[5])
+  plot_mod(x[,2], Y, dest_pilote)
   return (list(b_0=b0,b_1=b1,b_2=b2,noise_s=noises,conf_b_0=conf_b_0,conf_b_1=conf_b_1,conf_b_2=conf_b_2,conf_noise_s=conf_noise_s))
 }
 
 # Fonction qui permet de tracer l'échantillon pilote, la droite de régression et les intervalles de confiance/prédiction
-plot_pilote<-function(pilote){
-  x = pilote$x
-  Y = pilote$Y
-  model<-lm(Y~x)
+plot_mod<-function(x, Y, dest_pilote){
+  model <- lm(Y~x)
+  jpeg(dest_pilote)
   plot(x,Y)
   abline(model)
   segments(x,fitted(model),x, Y)
@@ -123,6 +123,7 @@ plot_pilote<-function(pilote){
   matlines(pred.frame, pc[,2:3], lty=c(2,2), col="blue")
   matlines(pred.frame, pp[,2:3], lty=c(3,3), col="red")
   legend("topleft",c("confiance","prediction"),lty=c(2,3), col=c("blue","red"))
+  dev.off()
 }
 
 #---------------------------------------------------
@@ -212,9 +213,9 @@ test_multiple<-function(alpha = 0.05, n, runs, pilote){
 # (Calcul basé sur l'algorithme de Monte Carlo )
 #---------------------------------------------------
 
-TEST<-function(npilote = 20, runs_bs_pilote = 1000, runs_MC = 1000, tailles = 10*(2:10), b_0 = NULL, b_1 = NULL, b_2 = NULL, noise_s = NULL){
+Puissance_mr<-function(npilote = 20, runs_bs_pilote = 1000, runs_MC = 1000, tailles = 10*(2:10), b_0 = NULL, b_1 = NULL, b_2 = NULL, noise_s = NULL, dest_puissance, dest_pilote, puissance = NULL){
   # Création du pilote
-  pilote = pilote_multiple_reg(npilote, runs_bs_pilote, b_0, b_1, b_2, noise_s)
+  pilote = pilote_multiple_reg(npilote, runs_bs_pilote, b_0, b_1, b_2, noise_s, dest_pilote)
   # On regarde la puissance en fonction de la taille d'échantillon
   # (!= npilote, qui est la taille du pilote.
   # ici, la taille de l'échantillon correspond à la taille des tirages pour Monte-Carlo)
@@ -229,10 +230,16 @@ TEST<-function(npilote = 20, runs_bs_pilote = 1000, runs_MC = 1000, tailles = 10
     IC_low_width[i] =  puissances[i] - results$IC_Puissance_model_2_inf
     IC_up_width[i] = results$IC_Puissance_model_2_sup - puissances[i]
   }
+  jpeg(dest_puissance)
   plotCI(tailles, puissances, uiw = IC_up_width, liw = IC_low_width, type = "o", barcol = "red")
+  dev.off()
   results # affiche les puissances pour le dernier tirage de Monte Carlo
 }
 
-TEST(npilote = npilote, runs_bs_pilote = runs_bs_pilote, runs_MC = runs_MC, tailles = tailles, b_0 = b_0, b_1 = b_1,b_2=b_2, noise_s = noise_s)
-TEST()
+n_calc = 
+  Puissance_mr(dest_puissance =  '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/puissance.jpg',
+               dest_pilote = '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/pilote.jpg',puissance = 0.8)
+
+n_calc
+
 

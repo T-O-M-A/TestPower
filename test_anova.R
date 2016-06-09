@@ -106,7 +106,7 @@ pilote_anova <- function(means, sample_sizes, s){
   return (means_empirique_pilote)
 }
 
-test_anova<-function(runs, means, sample_sizes, s, alpha){
+test_anova<-function(n, runs, means, sample_sizes, s, alpha){
   # Extraction pilote
   means_empirique_pilote = pilote_anova(means, sample_sizes, s)
   # Independent variable (predictor)
@@ -121,7 +121,7 @@ test_anova<-function(runs, means, sample_sizes, s, alpha){
   for (r in 1:runs) {
     # Generate random independent samples with normal distributions
     # for the dependent variable (predicted)
-    y = 1:N(sample_sizes)
+    y = 1:(k*n)
     indice = 0
     for(i in 1:k){
       y[(indice+1):(indice + sample_sizes[i])] = c(rnorm(sample_sizes[i],mean = means_empirique_pilote[i],sd =s))
@@ -165,7 +165,7 @@ results = data.frame(
 results
                 
 }
-test_anova(runs, means, sample_sizes,s, alpha)
+test_anova(100,runs, means, sample_sizes,s, alpha)
 
 # If meand=0, we expect the proportion of p-values<0.05 to be roughly at 0.05 (type I error rate)
 # If meand!=0, we expect the proportion of p-values<0.05 to be the highest possible (power)
