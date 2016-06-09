@@ -402,12 +402,12 @@ pilote_univariate_reg<-function(npilote, runs_bs_pilote, b_0, b_1, noise_s, dest
   conf_b_0 = c(c_0[4],c_0[5])
   conf_b_1 = c(c_1[4],c_1[5])
   conf_noise_s = c(c_s[4],c_s[5])
-  plot_mod(x,Y, dest_pilote, "Informations relatives au coefficient b1")
+  plot_mod_ur(x,Y, dest_pilote, "Informations relatives au coefficient b1")
   return (list(b_0=b0,b_1=b1,noise_s=noises,conf_b_0=conf_b_0,conf_b_1=conf_b_1,conf_noise_s=conf_noise_s))
 }
 
 # Fonction qui permet de tracer l'échantillon pilote, la droite de régression et les intervalles de confiance/prédiction
-plot_mod<-function(x,Y,dest_pilote,titre){
+plot_mod_ur<-function(x,Y,dest_pilote,titre){
   model<-lm(Y~x)
   jpeg(dest_pilote)
   plot(x,Y, main = titre)
@@ -499,7 +499,7 @@ test_univariate<-function(alpha = 0.05, n, runs, pilote){
 # (Calcul basé sur l'algorithme de Monte Carlo )
 #---------------------------------------------------
 
-Puissance_ur<-function(npilote = 20, runs_bs_pilote = 1000, runs_MC = 1000, taille_max = 70, b_0 = NULL, b_1 = NULL, noise_s = NULL, dest_puissance, dest_pilote, puissance = NULL){
+Puissance_ur<-function(npilote = 20, runs_bs_pilote = 1000, runs_MC = 1000, taille_max = 400, b_0 = NULL, b_1 = NULL, noise_s = NULL, dest_puissance, dest_pilote, puissance = NULL){
   # Environnement
   library(gplots)
   library(regression)
@@ -593,7 +593,7 @@ pilote_multiple_reg<-function(npilote, runs_bs_pilote, b_0, b_1, b_2, noise_s, d
   boot_b_0 <- boot(data=data, statistic=stat_b_0_mr, R=runs_bs_pilote)
   boot_b_1 <- boot(data=data, statistic=stat_b_1_mr, R=runs_bs_pilote)
   boot_b_2 <- boot(data=data, statistic=stat_b_2_mr, R=runs_bs_pilote)
-  boot_noise_s <- boot(data=data, statistic=stat_noise_s, R=runs_bs_pilote)
+  boot_noise_s <- boot(data=data, statistic=stat_noise_s_mr, R=runs_bs_pilote)
   c_0 = boot.ci(boot_b_0, type="bca")$bca
   c_1 = boot.ci(boot_b_1, type="bca")$bca
   c_2 = boot.ci(boot_b_2, type="bca")$bca
@@ -602,9 +602,34 @@ pilote_multiple_reg<-function(npilote, runs_bs_pilote, b_0, b_1, b_2, noise_s, d
   conf_b_1 = c(c_1[4],c_1[5])
   conf_b_2 = c(c_2[4],c_2[5])
   conf_noise_s = c(c_s[4],c_s[5])
-  plot_mod(x[,2], Y, dest_pilote, "Informations relatives au coefficient b2")
+  plot_mod_mr(x, Y, dest_pilote)
   return (list(b_0=b0,b_1=b1,b_2=b2,noise_s=noises,conf_b_0=conf_b_0,conf_b_1=conf_b_1,conf_b_2=conf_b_2,conf_noise_s=conf_noise_s))
 }
+
+
+# Fonction qui permet de tracer l'échantillon pilote, la droite de régression et les intervalles de confiance/prédiction
+plot_mod_mr<-function(x,Y,dest_pilote){
+  model<-lm(Y~x)
+  jpeg(dest_pilote)
+ # scatterplot3d(x[,1],x[,2],Y, main="Régression Y ~ x")
+  s3d <-scatterplot3d(x[,1],x[,2],Y, pch=16, highlight.3d=TRUE,
+                      type="h", main="Régression Y~x")
+  
+  s3d$plane3d(model)
+  #abline(model)
+  #segments(x[,2],fitted(model),x[,2], Y)
+  #f = floor(min(x))
+  #c = ceiling(max(x))
+  #pred.frame<-data.frame(x=seq(f,c,length.out = 5))
+  #pc<-predict(model, interval="confidence", newdata=pred.frame)
+  #pp<-predict(model, interval="prediction", newdata=pred.frame)
+  #matlines(pred.frame, pc[,2:3], lty=c(2,2), col="blue") 
+ # matlines(pred.frame, pp[,2:3], lty=c(3,3), col="red")
+#  legend("topleft",c("confiance","prediction"),lty=c(2,3), col=c("blue","red"))
+  dev.off()
+}
+
+
 
 #---------------------------------------------------
 # Monte-Carlo pour régression multiple
@@ -630,7 +655,9 @@ MC_rm<-function(alpha = 0.05, n, runs, b_0, b_1, b_2, noise_s){
   p5_model_0 = sum(pval0<alpha)/runs
   p5_model_1 = sum(pval1<alpha)/runs
   p5_model_2 = sum(pval2<alpha)/runs
-  return(list(p5_model_0 = p5_model_0, p5_model_1 = p5_model_1, p5_model_2 = p5_model_2))
+  
+  p5_model_12 = sum((pval1<alpha)&(pval2<alpha))/runs
+  return(list(p5_model_0 = p5_model_0, p5_model_1 = p5_model_1, p5_model_2 = p5_model_2, p5_model_12 = p5_model_12))
 }
 
 
@@ -668,21 +695,26 @@ test_multiple<-function(alpha = 0.05, n, runs, pilote){
   IC_Puissance_model_0 = c(MC_inf$p5_model_0,MC_sup$p5_model_0)
   IC_Puissance_model_1 = c(MC_inf$p5_model_1,MC_sup$p5_model_1)
   IC_Puissance_model_2 = c(MC_inf$p5_model_2,MC_sup$p5_model_2)
+  IC_Puissance_model_12 = c(MC_inf$p5_model_12,MC_sup$p5_model_12)
   Puissance_moy_model_0 = MC_moy$p5_model_0
   Puissance_moy_model_1 = MC_moy$p5_model_1
   Puissance_moy_model_2 = MC_moy$p5_model_2
+  Puissance_moy_model_12 = MC_moy$p5_model_12
   results = data.frame(
     n=n,
     runs = runs,
     Puissance_moy_model_0 = Puissance_moy_model_0,
     Puissance_moy_model_1 = Puissance_moy_model_1,
     Puissance_moy_model_2 = Puissance_moy_model_2,
+    Puissance_moy_model_12 = Puissance_moy_model_12,
     IC_Puissance_model_0_inf = IC_Puissance_model_0[1],
     IC_Puissance_model_0_sup = IC_Puissance_model_0[2],
     IC_Puissance_model_1_inf = IC_Puissance_model_1[1],
     IC_Puissance_model_1_sup = IC_Puissance_model_1[2],
     IC_Puissance_model_2_inf = IC_Puissance_model_2[1],
-    IC_Puissance_model_2_sup = IC_Puissance_model_2[2]
+    IC_Puissance_model_2_sup = IC_Puissance_model_2[2],
+    IC_Puissance_model_12_inf = IC_Puissance_model_12[1],
+    IC_Puissance_model_12_sup = IC_Puissance_model_12[2]
   )
   return (results)
 }
@@ -698,6 +730,7 @@ Puissance_mr<-function(npilote = 20, runs_bs_pilote = 1000, runs_MC = 1000, tail
   library(gplots)
   library(regression)
   library(boot)
+  library(scatterplot3d)
   # Création du pilote
   pilote = pilote_multiple_reg(npilote, runs_bs_pilote, b_0, b_1, b_2, noise_s, dest_pilote)
   # On regarde la puissance en fonction de la taille d'échantillon
@@ -711,18 +744,19 @@ Puissance_mr<-function(npilote = 20, runs_bs_pilote = 1000, runs_MC = 1000, tail
   for (i in 1:longueur){
     # On prend les mêmes tailles d'échantillonage pour les tirages de Monte-Carlo
     results = test_multiple(n = tailles[i], runs = runs_MC, pilote = pilote)
-    puissances[i] = results$Puissance_moy_model_2
-    IC_low_width[i] =  puissances[i] - results$IC_Puissance_model_2_inf
-    IC_up_width[i] = results$IC_Puissance_model_2_sup - puissances[i]
+    puissances[i] = results$Puissance_moy_model_12
+    IC_low_width[i] =  puissances[i] - results$IC_Puissance_model_12_inf
+    IC_up_width[i] = results$IC_Puissance_model_12_sup - puissances[i]
   }
   jpeg(dest_puissance)
   plotCI(tailles, puissances, uiw = IC_up_width, liw = IC_low_width, type = "o", barcol = "red")
   dev.off()
   results # affiche les puissances pour le dernier tirage de Monte Carlo
+  return(calcul_n(puissance,puissances,tailles))
 }
 
 n_calc = 
-  Puissance_ur(dest_puissance =  '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/puissance.jpg',
+  Puissance_mr(dest_puissance =  '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/puissance.jpg',
                dest_pilote = '/user/6/.base/bonjeang/home/SpeProject/Projet-Specialite-Calcul-de-Puissance/TEST/pilote.jpg',puissance = 0.8)
 
 n_calc
