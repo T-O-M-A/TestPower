@@ -1,0 +1,188 @@
+% definit le type de document et ses options
+\documentclass[a4paper,11pt]{article}
+
+% des paquetages utiles classiques, en ajouter d'autres selon vos besoins
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{dsfont}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{xspace}
+\usepackage[francais]{babel}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage[svgnames]{xcolor}
+\usepackage{sectsty}
+\usepackage[justification=centering]{caption}
+
+\setlength\parindent{24pt}
+
+% pour ecrire les reponses
+\newtheorem{exercice}{Exercice}
+
+% des commandes pratiques pour ecrire des maths :
+\newcommand{\dx}{\,dx}
+\newcommand{\ito}{,\dotsc,}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Poly}[1]{\mathcal{P}_{#1}}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\pars}[1]{\left(#1\right)}
+\newcommand{\bigpars}[1]{\bigl(#1\bigr)}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\dsp}{\displaystyle}
+
+% couleurs des titres
+\xdefinecolor{color3}{named}{SkyBlue}
+\xdefinecolor{color1}{named}{SlateBlue}
+\xdefinecolor{color2}{named}{CornflowerBlue}
+\sectionfont{\color{color1}}
+\subsectionfont{\color{color2}}
+\subsubsectionfont{\color{color3}}
+\title{Rapport du Projet de Spécialité\\ Estimation de puissance à posteriori}
+\author{Étudiants : Crépin Baptiste, Bonjean Grégoire \& Lair Thomas\\ Encadrant : Jean-Charles Quinton}
+\date{Mai - Juin 2016}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction - Sujet et problème posé}
+\subsection{Sujet}
+Le problème que nous nous posons lors de ce projet est un problème issu du domaine psychologique en statistiques : il s'agit de minimiser le nombre de personnes impliquées dans une étude, afin d'observer un certain effet pour une puissance donnée(fiabilité du test).
+\\Concrètement, on peut considérer l'exemple suivant : on inscrit le mot "bleu" dans la couleur bleue, et on demande à un groupe d'individus la couleur dans laquelle le mot est inscrit, en mesurant leur temps de réaction. De manière indépendante, on inscrit le mot "bleu" dans la couleur rouge et on pose à un groupe d'individus la même question que précédemment, en mesurant de nouveau leur temps de réaction. On nommera le premier groupe le groupe congruent, et le second le groupe incongruent. Les expériences montrent que le temps de réaction mesuré sera en moyenne plus grand pour le groupe incongruent que pour le groupe congruent.
+\\[1 cm]
+\begin{center}
+\includegraphics[scale=0.65]{Capture-6.png}\\
+Distribution des temps de réaction pour les groupes confruents et incongruents
+\\[1 cm]
+\end{center}
+
+Les temps de réactions suivent, pour chaque groupe respectivement, une loi normale de moyenne le temps de réaction moyen des individus. L'effet que l'on souhaite observer ici, ou taille d'effet, serait la diférence des deux moyennes, normalisée par l'écart type des observations.
+\\Le psychologue voudra donc savoir le nombre de personnes minimum dont il a besoin afin d'observer une différence entre les moyennes, à une puissance voulue.
+\\En réalité, le psychologue réalisera d'abord une étude "pilote", avec un nombe de personnes réduit, qui lui donnera l'ordre de grandeur de la taille d'effet quil peut obtenir, et lui permettra d'obtenir le nombre de personnes dont il a besoin pour valider une taille d'effet.
+\\L'objectif sera donc d'exprimer deux paramètres en fonction du dernier parmis les trois suivants : la taille d'effet, la taille d'échantillon, et la puissance.
+\subsection{Introduction aux concepts}
+\subsubsection{La puissance d'un test}
+Un test d'hypothèse est un test entre deux hypothèses : l'hypothèse nulle H0 et l'hypothèse alternative H1. Ici, l'hypothèse nulle correspond au fait de n'observer aucune taille d'effet significative, et l'hypothèse alternative correspond au fait d'en observer une significative. La probabilité $\alpha$ correspond à la probabilité de rejeter l'hypothèse nulle alors qu'elle est vraie, et est appelée erreur de première espèce.
+La probabilité $\beta$ correspond  à la probabilité de retenir l'hypothèse nulle alors qu'elle est fausse. C'est l'erreur de seconde espèce. La puissance 1 - $\beta$ est la probabilité de retenir l'hypothèse alternative à raison.
+\begin{center}
+\includegraphics[scale = 1]{images.png}\\
+Exemple pour deux lois normales, groupe congruent à gauche et incongruent à droite
+\end{center}
+
+\subsubsection{La taille d'effet}
+\subsubsection{Méthodes de Montecarlo et de Bootstrap}
+
+
+\subsection{Choix et interprétations du sujet}
+Le sujet de l'estimation de puissance est un sujet très vaste, tant les méthodes de calculs dépendent des hypothèses du test, nous avons donc du décider les aspects que nous voulions développer en priorité, et ceux que nous préférions laisser de côté.\\
+Nous avons gardé à l'esprit l'objectif primaire : minimiser le coût de l'étude statistique du psychologue, et donc minimiser la taille de l'échantillon. L'estimation de la taille d'échantillon pour une puissance fixée et une certaine taille d'effet se devait donc d'être dans nos objectifs de calcul.\\
+Également, le psychologue doit avoir besoin de calculer la puissance de son étude statistique, afin de valider son étude sur des critères statistiques, et de donner du crédit à l'effet observé.\\
+Le paramètre, parmis les trois paramètres que nous prenons en compte dans ce sujet, que nous avons décidé de ne pas calculer, est la taille d'effet : en effet, le psychologue a toujours un apriori sur la taille d'effet (qu'il aura pu précalculer sur une première étude), et nous n'avons pas jugé nécessaire de nous attarder sur son implémentation.\\
+Notre délimitation du travail est la suivante : nous sommes partis dans une optique de documentation de calculs sur les cas d'école d'estimation de puissance, dans lesquels l'utilisateur devra se placer plutôt que de fournir un cas réel. \\
+Ces cas d'école sont les suivants : 
+\begin{enumerate}
+\item loi normale à un échantillon
+\begin{center}
+\includegraphics[scale = 0.5]{normal.png}\\
+Distribution pilote pour une loi normale à un échantillon
+\end{center}
+\item lois normales indépendantes
+\begin{center}
+\includegraphics[scale = 0.5]{independants.png}\\
+Distribution pilote pour deux lois normales indépendantes
+\end{center}
+\item lois normales appareillées
+\begin{center}
+\includegraphics[scale = 0.5]{paired.png}\\
+Distribution pilote pour deux lois normales appareillées
+\end{center}
+\item test d'analyses de variances (pour k échantillons)
+\item regressions simples et complexes.
+\end{enumerate}
+Pour chacun de ces cas, 5 objectifs étaient à traiter : 
+\begin{enumerate}
+\item Calcul analytique (usage des fonctions de R)
+\item Estimation de puissance avec génération de pilote
+\item Estimation de puissance avec intervalle de confiance et estimation de taille d'échantillon
+\item Tracé de graphe
+\item Rajout du cas sur la plateforme (interface graphique)
+\end{enumerate}
+Images à fournir.
+\subsection{Objectifs fixés}
+L'objectif est de fournir au psychologue statisticien un véritable outil de calcul, qui lui permettra, en fonction du cas d'école dans lequel il se trouve, de calculer la puissance de son étude en fonction de la taille de son échantillon, et d'estimer la taille d'échantillon dont il a besoin pour valider son test à la puissance voulue.\\
+Paramètres à entrer : ?
+\section{Démarche}
+
+\subsection{Cas simples}
+Nous allons expliquer de manière générale la démarche pour estimer la puissance et la taille d'échantillon. La démarche était relativement similaire dans tous les cas classiques, malgré quelques spécificités.\\ \\
+\underline{Documentation et identification du test statistique :} \\
+Avant de commencer toute implémentation, il a tout d'abord fallu se documenter sur ces cas. Une partie de ce travail de documentation consistait à un travail de compréhension, et permettait d'identifier la statistique de test à utiliser (le test de Student pour la loi normale à un échantillon, à deux échantillons appareillés, à deux échantillons indépendants, et le test de Fisher pour le cas de l'anova)\\ \\
+\underline{Calcul analytique :}\\ 
+Les calculs analytiques apparaissent dans notre code et dans nos résultats par la variable p5package, et utilisent en fait des fonctions de test de R, dont nous avons du installer le package, du type power.t.test, pwr.test.anova...\\
+Le calcul analytique necessite donc d'identifier la loi que suivra la statistique (loi de Fisher et loi de Student), et à identifier les paramètres de ces fonctions : par exemple, pour le test à un échantillon, la fonction de test s'écrit : $p5package = power.t.test(n=n, d = meand/sd, sig.level = alpha, type = "one.sample", alternative = "two.sided")$\\
+Ici, meand représente la moyenne de l'échantillon à simuler, alpha représente l'erreur de première espèce, et le reste des paramètres correspond au type du test. Ces fonctions de R nous serviront de référence pour vérifier la fiabilité et la cohérence de nos estimateurs, et apparaissent dans nos tableaux de résultats. 
+\\ \\
+\underline{Estimation de puissance avec génération du pilote :}\\
+Cette partie de la démarche s'intéresse à une incertitude sur la taille d'effet.
+Le but ici est de calculer nous même la puissance, en générant un pilote et en calculant la statistique de test. Le pilote correspond à une petite étude, qui permettrait au chercheur d'obtenir des informations préliminaires. Dans le cas de notre simulation, il s'agit d'une loi normale de petite taille, à partir duquel on dupliquera les informations grace aux méthodes de Montecarlo. Montecarlo sera appliqué le nombre voulu de fois, à une certaine taille, et c'est sur les élèments que l'on obtient grac à cette méthode que l'on calculera la statistique de test.
+\\ Une fois cette statistique de test obtenue, on peut la comparer au quantile de la loi correspondante. Le nombre de fois où cette statistique sera supérieure au quantile, divisé par le nombre total de boucles de Montecarlo, nous donnera la puissance du test. Dans un premier temps nous avons stocké nos résultats dans un tableau, afin de vérifier sa fiabilité en comparaison des estimateurs de R.\\
+\begin{center}
+\includegraphics[scale = 1]{Capture-7.png}\\
+Tableau obtenu pour le test à un échantillon 
+\\[1 cm]
+\end{center}
+\underline{Estimation de puissance et de taille d'échantillon avec intervalle de confiance :}\\
+Dans cette partie, le but est de générer un graphe de la puissance en fonction de la taille d'échantillon (taille des prélèvements de Montecarlo), avec un intervalle de confiance sur la puissance.La démarche est simple : pour toutes les tailles de l'intervalle choisi (tailles de Montecarlo), on réitère l'étape expliquée précédemment, tout en calculant les valeurs inférieures, moyennes et supérieures pour la puissance, calculées à partir d'un intervalle de confiance pour les moyennes généré par R.\\ \\
+
+
+\underline{Tracé de graphe :}\\
+Ensuite, nous traçons la courbe de la puissance en fonction de la taille des échantillons de Montecarlo, avec intervalle de confiance. Ce graphe sera intégré à l'interface graphique, et sera un des produits des fonctionnalités de cas simple.
+\begin{center}
+\includegraphics[scale = 0.5]{puissance_ttest_independant.png}\\
+Puissance avec intervalle de confiance pour les deux normales indépendantes
+\end{center}
+\underline{Rajout du cas sur la plateforme :}\\
+A rajouter : comment l'interface graphique était modifiée à chaque fois
+
+\subsection{Régression linéaire}
+
+\subsection{Interface graphique}
+Explication de l'architecture de l'interface graphique (Contrôleur)\\
+Notre volonté en implémentant l'interface graphique était de la rendre la plus simple d'utilisation possible, et de rendre la navigation claire entre les différents cas d'utilisation. Nous avons décidé de la coder en Java, ayant déjà eu l'expérience de coder une interface graphique en Java auparavant.\\
+Pour connecter notre code R avec notre code Java, nous avons utilisé RJava.
+\\Mettre diagramme de classes ici
+\section{Application finale}
+\subsection{Fonctionnalités}
+Images à changer + diagramme de cas d'utilisation/sequenceà ajouter. Manuel utilisateur ?
+\begin{center}
+\includegraphics[scale = 0.4]{interface1.png}\\
+Principales fonctionnalités de l'interface\\[2.5 cm]
+\end{center}
+\begin{center}
+\includegraphics[scale = 0.4]{interface4.png}\\
+Fonctionnalités pour le cas simple\\[2.5 cm]
+\end{center}
+\begin{center}
+\includegraphics[scale = 0.4]{interface5.png}\\
+Fonctionnalités pour les cas de régression
+\end{center}
+\subsection{Performances et Fiabilité}
+\subsection{Un projet de recherche : ressenti général}
+
+\section{Conclusion}
+
+
+\section{Bibliographie}
